@@ -3,99 +3,103 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { ArrowRight, ShieldCheck, Zap, Award, Settings, Phone } from 'lucide-react';
-import { CATEGORIES } from '@/lib/data';
+import { ArrowRight, ShieldCheck, Settings, Phone, Award, CheckCircle2 } from 'lucide-react';
+import { CATEGORIES, PRODUCTS } from '@/lib/data';
+
+const LOGO_URL = "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/d8b609a8-e1e8-4f43-a882-a3eb0e843247/Screenshot-2026-01-22-at-9.48.19-PM-1769098705509.png?width=8000&height=8000&resize=contain";
 
 const FEATURES = [
   {
     icon: <Award className="w-6 h-6" />,
-    title: 'Quality Manufacturing',
-    description: 'Every component undergoes rigorous quality checks to ensure industrial-grade precision.',
+    title: 'Precision Engineering',
+    description: 'Specialized manufacturing of LPG stove components with tight tolerances since 2013.',
   },
   {
     icon: <Settings className="w-6 h-6" />,
-    title: 'Industry Experience',
-    description: 'Years of expertise in manufacturing LPG stove parts for leading domestic brands.',
-  },
-  {
-    icon: <Zap className="w-6 h-6" />,
-    title: 'Reliable Supply',
-    description: 'Optimized supply chain to ensure consistent and timely delivery for bulk orders.',
+    title: 'Modern Facility',
+    description: 'Equipped with high-precision machinery at our Ballabhgarh manufacturing unit.',
   },
   {
     icon: <ShieldCheck className="w-6 h-6" />,
-    title: 'Precision Components',
-    description: 'Engineered with tight tolerances to ensure perfect fit and maximum safety.',
+    title: 'Quality Certified',
+    description: 'Rigorous testing protocols for every batch to ensure safety and durability.',
+  },
+  {
+    icon: <CheckCircle2 className="w-6 h-6" />,
+    title: 'Bulk Supply',
+    description: 'Reliable supply chain partner for major domestic LPG stove brands across India.',
   },
 ];
 
 export default function Home() {
+  const knobProducts = PRODUCTS.filter(p => p.category === 'knobs').slice(0, 4);
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-zinc-50">
-        <div className="absolute inset-0 bg-gradient-to-br from-zinc-200/50 via-transparent to-zinc-100/50" />
+      <section className="relative min-h-[90vh] flex items-center pt-20 overflow-hidden bg-white">
+        <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:32px_32px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-20" />
         <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
             >
-              <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-zinc-900 mb-6 font-space-grotesk">
-                Precision LPG Gas Stove <span className="text-zinc-400 italic">Components</span>
+              <div className="inline-flex items-center space-x-2 bg-red-50 text-red-600 px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase mb-6 border border-red-100">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                </span>
+                <span>ESTABLISHED 2013</span>
+              </div>
+              <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-zinc-900 mb-6 font-space-grotesk leading-[0.9]">
+                Precision LPG <span className="text-zinc-400">Gas Stove</span> Components
               </h1>
-              <p className="text-xl md:text-2xl text-zinc-600 mb-10 max-w-2xl mx-auto">
-                Trusted manufacturing by SR Industries. Delivering high-quality, durable parts for the LPG industry.
+              <p className="text-xl text-zinc-600 mb-10 max-w-xl leading-relaxed">
+                SR Industries is a premier manufacturer of high-quality LPG components based in Faridabad, delivering excellence through precision engineering.
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center gap-4">
                 <Link
                   href="/products"
                   className="w-full sm:w-auto px-8 py-4 bg-zinc-900 text-white rounded-xl font-bold text-lg hover:bg-zinc-800 transition-all flex items-center justify-center group"
                 >
-                  View Products
+                  Explore Catalog
                   <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
                   href="/contact"
                   className="w-full sm:w-auto px-8 py-4 bg-white text-zinc-900 border border-zinc-200 rounded-xl font-bold text-lg hover:bg-zinc-50 transition-all"
                 >
-                  Contact Us
+                  Contact Factory
                 </Link>
+              </div>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative aspect-square flex items-center justify-center"
+            >
+              <div className="absolute inset-0 bg-gradient-to-tr from-zinc-100 to-transparent rounded-full blur-3xl opacity-50" />
+              <div className="relative w-full max-w-md aspect-square bg-zinc-50 border border-zinc-100 rounded-[3rem] shadow-2xl overflow-hidden flex items-center justify-center p-12">
+                <Image 
+                  src={LOGO_URL} 
+                  alt="SR Industries Logo" 
+                  width={400} 
+                  height={400} 
+                  className="object-contain"
+                />
               </div>
             </motion.div>
           </div>
         </div>
-        
-        {/* Abstract animated background elements */}
-        <motion.div
-          animate={{ 
-            scale: [1, 1.1, 1],
-            rotate: [0, 5, 0]
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-24 -left-24 w-96 h-96 bg-zinc-200/40 rounded-full blur-3xl -z-10"
-        />
-        <motion.div
-          animate={{ 
-            scale: [1, 1.2, 1],
-            rotate: [0, -5, 0]
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-24 -right-24 w-80 h-80 bg-zinc-300/30 rounded-full blur-3xl -z-10"
-        />
       </section>
 
-      {/* Why SR Industries */}
-      <section className="py-24 bg-white">
+      {/* Trust & Features */}
+      <section className="py-24 bg-zinc-50">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4 font-space-grotesk">
-              Why SR Industries?
-            </h2>
-            <div className="w-20 h-1.5 bg-zinc-900 mx-auto" />
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {FEATURES.map((feature, index) => (
               <motion.div
@@ -104,8 +108,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -10 }}
-                className="p-8 bg-zinc-50 rounded-2xl border border-zinc-100 transition-all"
+                className="p-8 bg-white rounded-2xl border border-zinc-100 hover:shadow-xl hover:shadow-zinc-200/50 transition-all"
               >
                 <div className="w-12 h-12 bg-zinc-900 text-white rounded-xl flex items-center justify-center mb-6">
                   {feature.icon}
@@ -120,26 +123,70 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Product Categories Preview */}
-      <section className="py-24 bg-zinc-50">
+      {/* Knob Series Showcase - Horizontal Scroll */}
+      <section className="py-24 bg-white overflow-hidden">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-4">
+          <div className="flex items-end justify-between mb-16">
             <div>
               <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4 font-space-grotesk">
-                Product Categories
+                Featured Knob Series
               </h2>
-              <p className="text-zinc-600">Explore our wide range of precision-engineered components.</p>
+              <p className="text-zinc-500">Discover our premium range of control knobs for every stove type.</p>
             </div>
-            <Link 
-              href="/products" 
-              className="text-zinc-900 font-bold flex items-center hover:gap-2 transition-all"
-            >
-              View All Products <ArrowRight size={20} className="ml-2" />
+            <Link href="/products?category=knobs" className="hidden md:flex items-center text-zinc-900 font-bold hover:underline">
+              View All Series <ArrowRight size={20} className="ml-2" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {CATEGORIES.map((category, index) => (
+          <div className="flex gap-6 overflow-x-auto pb-8 snap-x no-scrollbar">
+            {knobProducts.map((product) => (
+              <motion.div
+                key={product.id}
+                className="min-w-[300px] md:min-w-[400px] snap-start"
+                whileHover={{ y: -5 }}
+              >
+                <Link href={`/products/${product.slug}`} className="group block h-full bg-zinc-50 rounded-3xl border border-zinc-100 overflow-hidden">
+                  <div className="aspect-[4/3] bg-zinc-200 flex items-center justify-center text-zinc-400 relative overflow-hidden">
+                    <span className="text-sm font-bold uppercase tracking-widest opacity-20 group-hover:scale-110 transition-transform duration-500">
+                      {product.subCategory}
+                    </span>
+                  </div>
+                  <div className="p-8">
+                    <span className="text-[10px] font-bold text-red-600 uppercase tracking-widest mb-2 block">
+                      {product.subCategory}
+                    </span>
+                    <h3 className="text-2xl font-bold text-zinc-900 mb-2">{product.name}</h3>
+                    <p className="text-sm text-zinc-500 mb-4 line-clamp-1">{product.description}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-mono text-zinc-400">{product.modelNumber}</span>
+                      <div className="flex gap-1">
+                        {product.colors?.map((color, i) => (
+                          <div key={i} className="w-3 h-3 rounded-full border border-zinc-200" style={{ backgroundColor: color }} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Other Product Categories Grid */}
+      <section className="py-24 bg-zinc-50">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-6 font-space-grotesk">
+              Other Product Categories
+            </h2>
+            <p className="text-zinc-600 text-lg">
+              Beyond knobs, we manufacture a comprehensive range of essential LPG components with industrial precision.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {CATEGORIES.filter(c => c.id !== 'knobs').map((category, index) => (
               <motion.div
                 key={category.id}
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -149,18 +196,18 @@ export default function Home() {
               >
                 <Link 
                   href={`/products?category=${category.slug}`}
-                  className="group block relative aspect-[4/5] overflow-hidden rounded-2xl bg-zinc-200"
+                  className="group block relative aspect-square overflow-hidden rounded-3xl bg-white border border-zinc-100 p-8 flex flex-col justify-between hover:bg-zinc-900 transition-colors duration-500"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent z-10" />
-                  <div className="absolute inset-0 flex items-center justify-center text-zinc-400 font-medium group-hover:scale-110 transition-transform duration-500">
-                    {/* Placeholder for category image */}
-                    {category.name}
+                  <div className="w-12 h-12 rounded-2xl bg-zinc-50 group-hover:bg-zinc-800 flex items-center justify-center transition-colors">
+                    <ArrowRight className="text-zinc-400 group-hover:text-white group-hover:rotate-[-45deg] transition-all" />
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
-                    <h3 className="text-xl font-bold text-white mb-2">{category.name}</h3>
-                    <span className="text-sm text-zinc-300 font-medium opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300 inline-block">
-                      View Category
-                    </span>
+                  <div>
+                    <h3 className="text-2xl font-bold text-zinc-900 group-hover:text-white mb-2 transition-colors">
+                      {category.name}
+                    </h3>
+                    <p className="text-sm text-zinc-500 group-hover:text-zinc-400 transition-colors">
+                      {category.subCategories?.length} Series / Types
+                    </p>
                   </div>
                 </Link>
               </motion.div>
@@ -169,84 +216,83 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Manufacturing / Trust Section */}
-      <section className="py-24 bg-white border-y border-zinc-100">
+      {/* Manufacturing Strength */}
+      <section className="py-24 bg-white">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-6 font-space-grotesk">
-                Excellence in Industrial Manufacturing
-              </h2>
-              <p className="text-lg text-zinc-600 mb-8 leading-relaxed">
-                SR Industries has been at the forefront of LPG stove component manufacturing for years. Our facility is equipped with precision machinery and a dedicated quality control team ensuring that every part that leaves our factory meets the highest industry standards.
-              </p>
-              <div className="space-y-4">
-                {['Advanced Machinery', 'Strict Quality Control', 'Bulk Manufacturing Capability', 'Fast Turnaround Times'].map((item, idx) => (
-                  <div key={idx} className="flex items-center space-x-3">
-                    <div className="w-5 h-5 rounded-full bg-zinc-900 flex items-center justify-center">
-                      <ShieldCheck size={12} className="text-white" />
+          <div className="bg-zinc-900 rounded-[3rem] overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-2">
+              <div className="p-12 md:p-20 flex flex-col justify-center">
+                <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tighter mb-8 font-space-grotesk">
+                  Faridabad's Trusted Manufacturing Partner
+                </h2>
+                <div className="space-y-8">
+                  <div className="flex gap-6">
+                    <div className="w-12 h-12 shrink-0 bg-red-600 rounded-2xl flex items-center justify-center">
+                      <ShieldCheck className="text-white" />
                     </div>
-                    <span className="font-medium text-zinc-800">{item}</span>
+                    <div>
+                      <h4 className="text-white font-bold text-xl mb-2">Since 2013</h4>
+                      <p className="text-zinc-400 leading-relaxed">Over a decade of consistent delivery and quality improvement in the LPG industry.</p>
+                    </div>
                   </div>
-                ))}
+                  <div className="flex gap-6">
+                    <div className="w-12 h-12 shrink-0 bg-zinc-800 rounded-2xl flex items-center justify-center">
+                      <Settings className="text-white" />
+                    </div>
+                    <div>
+                      <h4 className="text-white font-bold text-xl mb-2">Industrial Excellence</h4>
+                      <p className="text-zinc-400 leading-relaxed">Our facility in Saroorpur Industrial Area is optimized for precision manufacturing at scale.</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-12">
+                  <Link href="/about" className="text-white font-bold inline-flex items-center group">
+                    Our Manufacturing Story <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
               </div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="relative aspect-video bg-zinc-100 rounded-3xl overflow-hidden flex items-center justify-center"
-            >
-              <div className="text-zinc-300 font-bold text-2xl uppercase tracking-widest">Manufacturing Unit</div>
-              <div className="absolute inset-0 bg-gradient-to-tr from-zinc-900/10 to-transparent" />
-            </motion.div>
+              <div className="relative aspect-square lg:aspect-auto bg-zinc-800 flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80')] bg-cover bg-center" />
+                <div className="relative z-10 text-center px-12">
+                  <span className="text-[10rem] font-bold text-white/5 font-space-grotesk absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">SR</span>
+                  <div className="text-white/40 text-sm font-mono tracking-[0.3em] uppercase">Manufacturing Excellence</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Strip */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 md:px-6">
+      {/* WhatsApp CTA */}
+      <section className="py-24">
+        <div className="container mx-auto px-4 md:px-6 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="bg-zinc-900 rounded-[2.5rem] p-12 md:p-20 text-center relative overflow-hidden"
+            className="max-w-4xl mx-auto"
           >
-            <div className="relative z-10">
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-space-grotesk">
-                Looking for reliable LPG components?
-              </h2>
-              <p className="text-zinc-400 text-lg mb-10 max-w-xl mx-auto">
-                Get in touch with us for bulk orders, custom requirements, or to request a quote.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link
-                  href="https://wa.me/91XXXXXXXXXX"
-                  target="_blank"
-                  className="w-full sm:w-auto px-8 py-4 bg-white text-zinc-900 rounded-xl font-bold text-lg hover:bg-zinc-100 transition-all flex items-center justify-center"
-                >
-                  <Phone size={20} className="mr-2" />
-                  Chat on WhatsApp
-                </Link>
-                <Link
-                  href="/contact"
-                  className="w-full sm:w-auto px-8 py-4 border border-zinc-700 text-white rounded-xl font-bold text-lg hover:bg-zinc-800 transition-all"
-                >
-                  Contact Form
-                </Link>
-              </div>
-            </div>
-            
-            {/* Background pattern */}
-            <div className="absolute inset-0 opacity-10 pointer-events-none">
-              <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-8 font-space-grotesk">
+              Ready for Bulk Enquiry?
+            </h2>
+            <p className="text-xl text-zinc-500 mb-12 max-w-2xl mx-auto leading-relaxed">
+              Partner with SR Industries for reliable, high-quality LPG components. We handle custom specifications and bulk requirements.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+              <Link
+                href="https://wa.me/919873741552"
+                target="_blank"
+                className="w-full sm:w-auto px-10 py-5 bg-zinc-900 text-white rounded-2xl font-bold text-xl hover:bg-zinc-800 transition-all flex items-center justify-center shadow-2xl shadow-zinc-200"
+              >
+                <Phone size={24} className="mr-3" fill="white" />
+                Chat on WhatsApp
+              </Link>
+              <Link
+                href="tel:+919873741552"
+                className="w-full sm:w-auto px-10 py-5 bg-white text-zinc-900 border border-zinc-200 rounded-2xl font-bold text-xl hover:bg-zinc-50 transition-all flex items-center justify-center"
+              >
+                Call +91 9873741552
+              </Link>
             </div>
           </motion.div>
         </div>
