@@ -25,6 +25,20 @@ export interface Category {
   subCategories?: string[];
 }
 
+export const BRAND_ASSETS = {
+  logoPrimary: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/d8b609a8-e1e8-4f43-a882-a3eb0e843247/Screenshot-2026-01-22-at-10.03.57-PM-1769099641705.png?width=8000&height=8000&resize=contain",
+  logoSquare: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/d8b609a8-e1e8-4f43-a882-a3eb0e843247/Screenshot-2026-01-22-at-10.03.57-PM-1769099641705.png?width=8000&height=8000&resize=contain",
+  logoFooter: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/d8b609a8-e1e8-4f43-a882-a3eb0e843247/Screenshot-2026-01-22-at-10.03.48-PM-1769099632415.png?width=8000&height=8000&resize=contain",
+  heroImage: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/d8b609a8-e1e8-4f43-a882-a3eb0e843247/ChatGPT-Image-Jan-22-2026-10_04_21-PM-1769099670050.png?width=8000&height=8000&resize=contain",
+};
+
+export const CONTACT_DATA = {
+  phone: "+91 9873741552",
+  whatsapp: "919873741552",
+  email: "info@srindustries.co.in",
+  address: "Plot No. 9, Gali No. 11, Saroorpur Industrial Area, Ballabhgarh, Faridabad, Haryana – 121004, India",
+};
+
 export const CATEGORIES: Category[] = [
   {
     id: 'knobs',

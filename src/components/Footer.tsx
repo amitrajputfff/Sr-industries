@@ -1,8 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Mail, Phone, MapPin, Instagram, Facebook, Linkedin } from 'lucide-react';
-
-const LOGO_URL = "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/d8b609a8-e1e8-4f43-a882-a3eb0e843247/Screenshot-2026-01-22-at-9.48.19-PM-1769098705509.png?width=8000&height=8000&resize=contain";
+import { BRAND_ASSETS, CONTACT_DATA } from '@/lib/data';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -12,15 +11,17 @@ export function Footer() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand Column */}
-          <div className="md:col-span-1">
-            <Link href="/" className="flex items-center space-x-2 mb-6">
-              <div className="relative w-12 h-12">
-                <Image src={LOGO_URL} alt="SR Industries" fill className="object-contain brightness-0 invert" />
-              </div>
-              <span className="text-xl font-bold tracking-tighter text-white">
-                SR <span className="text-zinc-500">INDUSTRIES</span>
-              </span>
-            </Link>
+            <div className="md:col-span-1">
+              <Link href="/" className="flex items-center space-x-2 mb-6">
+                <div className="relative w-48 h-14">
+                  <Image 
+                    src={BRAND_ASSETS.logoFooter} 
+                    alt="SR Industries" 
+                    fill 
+                    className="object-contain object-left" 
+                  />
+                </div>
+              </Link>
             <p className="text-sm leading-relaxed mb-6">
               Faridabad-based premier manufacturer of LPG gas stove components since 2013. Precision, quality, and durability in every part.
             </p>
@@ -82,16 +83,16 @@ export function Footer() {
               <li className="flex items-start space-x-3">
                 <MapPin size={18} className="text-red-500 shrink-0" />
                 <span>
-                  Plot No. 9, Gali No. 11, Saroorpur Industrial Area, Ballabhgarh, Faridabad, Haryana – 121004, India
+                  {CONTACT_DATA.address}
                 </span>
               </li>
               <li className="flex items-center space-x-3">
                 <Phone size={18} className="text-red-500 shrink-0" />
-                <span>+91 9873741552</span>
+                <span>{CONTACT_DATA.phone}</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail size={18} className="text-red-500 shrink-0" />
-                <span>info@srindustries.co.in</span>
+                <span>{CONTACT_DATA.email}</span>
               </li>
             </ul>
           </div>
