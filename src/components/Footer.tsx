@@ -13,13 +13,22 @@ export function Footer() {
           {/* Brand Column */}
             <div className="md:col-span-1">
               <Link href="/" className="flex items-center space-x-2 mb-6">
-                <div className="relative w-48 h-14">
+                <div className="relative w-12 h-12">
                   <Image 
                     src={BRAND_ASSETS.logoFooter} 
                     alt="SR Industries" 
                     fill 
-                    className="object-contain object-left" 
+                    className="object-contain"
+                    style={{ filter: 'brightness(0) invert(1)' }}
                   />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-base font-semibold tracking-tight text-white leading-none">
+                    SR INDUSTRIES
+                  </span>
+                  <span className="text-[8px] uppercase tracking-widest text-zinc-400 font-medium">
+                    LPG Stove Parts
+                  </span>
                 </div>
               </Link>
             <p className="text-sm leading-relaxed mb-6">

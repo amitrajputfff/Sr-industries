@@ -36,7 +36,14 @@ function ProductsContent() {
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter((product) => {
       const matchesCategory = product.category === selectedCategory;
-      const matchesSubCategory = selectedSubCategory === 'all' || product.subCategory === selectedSubCategory;
+      
+      // Normalize subcategory comparison (handle both "royal" and "Royal Series" formats)
+      const normalizedProductSub = product.subCategory?.toLowerCase().replace(' series', '');
+      const normalizedSelectedSub = selectedSubCategory.toLowerCase().replace(' series', '');
+      const matchesSubCategory = selectedSubCategory === 'all' || 
+                                  normalizedProductSub === normalizedSelectedSub ||
+                                  product.subCategory === selectedSubCategory;
+      
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                             product.modelNumber.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSubCategory && matchesSearch;
@@ -66,10 +73,10 @@ function ProductsContent() {
             <ChevronRight size={12} />
             <span className="text-zinc-900">Products Catalog</span>
           </div>
-          <h1 className="text-3xl md:text-6xl font-bold tracking-tighter mb-4 font-space-grotesk text-zinc-900">
+          <h1 className="text-2xl md:text-5xl font-semibold tracking-tight mb-3 text-zinc-900">
             {currentCategoryData?.name} <span className="text-zinc-400">Series</span>
           </h1>
-          <p className="text-sm md:text-lg text-zinc-500 max-w-2xl leading-relaxed">
+          <p className="text-sm md:text-base text-zinc-500 max-w-2xl leading-relaxed">
             Strict adherence to industrial standards for the {currentCategoryData?.name.toLowerCase()} classification (Catalogue 2024–25).
           </p>
         </div>
@@ -78,7 +85,7 @@ function ProductsContent() {
         <div className="lg:hidden flex gap-3 mb-6">
           <button
             onClick={() => setIsMobileFilterOpen(true)}
-            className="flex-grow flex items-center justify-center space-x-2 bg-zinc-900 text-white py-4 rounded-2xl font-bold text-sm"
+            className="flex-grow flex items-center justify-center space-x-2 bg-zinc-900 text-white py-4 min-h-[48px] rounded-2xl font-bold text-sm"
           >
             <Filter size={18} />
             <span>FILTER PRODUCTS</span>
@@ -90,7 +97,7 @@ function ProductsContent() {
               placeholder="Model #"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-4 bg-white border border-zinc-200 rounded-2xl text-xs font-bold outline-none"
+              className="w-full pl-10 pr-4 py-4 min-h-[48px] bg-white border border-zinc-200 rounded-2xl text-xs font-bold outline-none"
             />
           </div>
         </div>
@@ -108,7 +115,7 @@ function ProductsContent() {
                   <button
                     key={cat.id}
                     onClick={() => handleCategoryChange(cat.slug)}
-                    className={`w-full text-left px-5 py-3 rounded-xl text-sm font-bold transition-all flex items-center justify-between group ${
+                    className={`w-full text-left px-5 py-4 min-h-[48px] rounded-xl text-sm font-bold transition-all flex items-center justify-between group ${
                       selectedCategory === cat.slug
                         ? 'bg-zinc-900 text-white shadow-xl shadow-zinc-200'
                         : 'bg-white text-zinc-600 hover:bg-zinc-100'
@@ -134,7 +141,7 @@ function ProductsContent() {
                 <div className="grid grid-cols-1 gap-2">
                   <button
                     onClick={() => handleSubCategoryChange('all')}
-                    className={`text-left px-5 py-2.5 rounded-xl text-xs font-bold transition-all border ${
+                    className={`text-left px-5 py-3 min-h-[44px] rounded-xl text-xs font-bold transition-all border ${
                       selectedSubCategory === 'all'
                         ? 'bg-zinc-100 border-zinc-200 text-zinc-900'
                         : 'bg-transparent border-transparent text-zinc-500 hover:text-zinc-900'
@@ -146,7 +153,7 @@ function ProductsContent() {
                     <button
                       key={sub}
                       onClick={() => handleSubCategoryChange(sub)}
-                      className={`text-left px-5 py-2.5 rounded-xl text-xs font-bold transition-all border ${
+                      className={`text-left px-5 py-3 min-h-[44px] rounded-xl text-xs font-bold transition-all border ${
                         selectedSubCategory === sub
                           ? 'bg-zinc-100 border-zinc-200 text-zinc-900'
                           : 'bg-transparent border-transparent text-zinc-500 hover:text-zinc-900'
@@ -216,7 +223,7 @@ function ProductsContent() {
                   <div className="w-12 h-12 md:w-16 md:h-16 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Search className="text-zinc-200" size={24} />
                   </div>
-                  <h3 className="text-lg md:text-xl font-bold text-zinc-900 mb-2 font-space-grotesk">No components found</h3>
+                  <h3 className="text-base md:text-lg font-semibold text-zinc-900 mb-2">No components found</h3>
                   <p className="text-zinc-500 max-w-[240px] md:max-w-xs mx-auto text-xs md:text-sm">
                     Try adjusting your series selection or search by model number.
                   </p>
@@ -253,7 +260,7 @@ function ProductsContent() {
             >
               <div className="p-8">
                 <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-2xl font-bold font-space-grotesk">Catalog Filters</h2>
+                  <h2 className="text-xl font-semibold">Catalog Filters</h2>
                   <button 
                     onClick={() => setIsMobileFilterOpen(false)}
                     className="w-10 h-10 bg-zinc-100 rounded-full flex items-center justify-center"
@@ -271,7 +278,7 @@ function ProductsContent() {
                         <button
                           key={cat.id}
                           onClick={() => handleCategoryChange(cat.slug)}
-                          className={`w-full text-left px-5 py-4 rounded-2xl text-sm font-bold transition-all ${
+                          className={`w-full text-left px-5 py-4 min-h-[48px] rounded-2xl text-sm font-bold transition-all ${
                             selectedCategory === cat.slug
                               ? 'bg-zinc-900 text-white shadow-xl shadow-zinc-200'
                               : 'bg-zinc-50 text-zinc-600'
@@ -290,7 +297,7 @@ function ProductsContent() {
                       <div className="grid grid-cols-2 gap-2">
                         <button
                           onClick={() => handleSubCategoryChange('all')}
-                          className={`text-center px-4 py-3 rounded-xl text-xs font-bold transition-all border ${
+                          className={`text-center px-4 py-3 min-h-[44px] rounded-xl text-xs font-bold transition-all border ${
                             selectedSubCategory === 'all'
                               ? 'bg-zinc-100 border-zinc-200 text-zinc-900'
                               : 'bg-zinc-50 border-transparent text-zinc-500'
@@ -302,7 +309,7 @@ function ProductsContent() {
                           <button
                             key={sub}
                             onClick={() => handleSubCategoryChange(sub)}
-                            className={`text-center px-4 py-3 rounded-xl text-xs font-bold transition-all border ${
+                            className={`text-center px-4 py-3 min-h-[44px] rounded-xl text-xs font-bold transition-all border ${
                               selectedSubCategory === sub
                                 ? 'bg-zinc-100 border-zinc-200 text-zinc-900'
                                 : 'bg-zinc-50 border-transparent text-zinc-500'
@@ -318,7 +325,7 @@ function ProductsContent() {
 
                 <button
                   onClick={() => setIsMobileFilterOpen(false)}
-                  className="w-full bg-zinc-900 text-white py-5 rounded-2xl font-bold mt-12 mb-4"
+                  className="w-full bg-zinc-900 text-white py-5 min-h-[56px] rounded-2xl font-bold mt-12 mb-4"
                 >
                   SHOW {filteredProducts.length} RESULTS
                 </button>

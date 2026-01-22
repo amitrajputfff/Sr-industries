@@ -9,6 +9,11 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  // Support both old colors format and new colorVariants format
+  const colors = product.colorVariants 
+    ? product.colorVariants.map(v => v.color)
+    : product.colors;
+
   return (
     <motion.div
       whileHover={{ y: -5 }}
@@ -33,7 +38,7 @@ export function ProductCard({ product }: ProductCardProps) {
             <p className="text-[8px] md:text-[10px] font-bold text-red-600 uppercase tracking-widest mb-1">
               {product.subCategory || product.category}
             </p>
-            <h3 className="text-sm md:text-xl font-bold text-zinc-900 group-hover:text-red-600 transition-colors font-space-grotesk line-clamp-1">
+            <h3 className="text-sm md:text-lg font-semibold text-zinc-900 group-hover:text-red-600 transition-colors line-clamp-1">
               {product.name}
             </h3>
           </div>
@@ -54,15 +59,15 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
 
           <div className="flex items-center justify-between mt-auto pt-3 md:pt-4 border-t border-zinc-50">
-            <div className="flex gap-1">
-              {product.colors?.slice(0, 3).map((color, i) => (
-                <div key={i} className="w-2.5 h-2.5 md:w-4 md:h-4 rounded-full border border-zinc-200 shadow-sm" style={{ backgroundColor: color }} />
+            <div className="flex gap-1 md:gap-1.5">
+              {colors?.slice(0, 3).map((color, i) => (
+                <div key={i} className="w-3 h-3 md:w-4 md:h-4 rounded-full border border-zinc-200 shadow-sm" style={{ backgroundColor: color }} />
               ))}
-              {product.colors && product.colors.length > 3 && (
-                <div className="text-[8px] md:text-[10px] font-bold text-zinc-400 self-center">+{product.colors.length - 3}</div>
+              {colors && colors.length > 3 && (
+                <div className="text-[9px] md:text-[10px] font-bold text-zinc-400 self-center">+{colors.length - 3}</div>
               )}
             </div>
-            <div className="flex items-center text-[10px] md:text-xs font-bold text-zinc-900 group-hover:text-red-600 transition-all uppercase tracking-widest">
+            <div className="flex items-center text-[10px] md:text-xs font-semibold text-zinc-900 group-hover:text-red-600 transition-all uppercase tracking-wider">
               <span className="hidden sm:inline">Details</span>
               <ArrowRight size={14} className="ml-1 group-hover:translate-x-1 transition-transform" />
             </div>

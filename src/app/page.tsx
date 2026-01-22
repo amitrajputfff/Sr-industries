@@ -52,10 +52,10 @@ export default function Home() {
                 </span>
                 <span>LPG Stove Parts Manufacturer Since 2013</span>
               </div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-zinc-900 mb-6 font-space-grotesk leading-[1] md:leading-[0.9]">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-zinc-900 mb-6 leading-[1.1]">
                 Precision LPG <span className="text-zinc-400">Gas Stove</span> Components
               </h1>
-              <p className="text-lg md:text-xl text-zinc-600 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+              <p className="text-base md:text-lg text-zinc-600 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
                 SR Industries is a premier manufacturer of high-quality LPG components based in Faridabad, delivering excellence through precision engineering.
               </p>
               <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
@@ -94,7 +94,7 @@ export default function Home() {
               </div>
               {/* Floating Badge */}
               <div className="absolute -bottom-6 -right-6 md:bottom-12 md:-right-12 bg-white p-6 md:p-8 rounded-[2rem] shadow-2xl border border-zinc-100 hidden sm:block">
-                <div className="text-3xl md:text-5xl font-bold text-zinc-900 font-space-grotesk leading-none">12+</div>
+              <div className="text-3xl md:text-4xl font-semibold text-zinc-900 leading-none">12+</div>
                 <div className="text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-widest mt-2">Years of Excellence</div>
               </div>
             </motion.div>
@@ -118,8 +118,8 @@ export default function Home() {
                 <div className="w-12 h-12 md:w-14 md:h-14 bg-zinc-900 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-zinc-200">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-bold mb-4 font-space-grotesk">{feature.title}</h3>
-                <p className="text-zinc-600 text-sm leading-relaxed font-medium">
+                <h3 className="text-lg font-semibold mb-3">{feature.title}</h3>
+                <p className="text-zinc-600 text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </motion.div>
@@ -134,10 +134,10 @@ export default function Home() {
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-16 gap-6">
             <div className="max-w-2xl">
               <div className="text-[10px] font-bold text-red-600 uppercase tracking-[0.2em] mb-4">The Collection</div>
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tighter mb-4 font-space-grotesk leading-tight">
+              <h2 className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight mb-4 leading-tight">
                 Knob Series Showcase
               </h2>
-              <p className="text-zinc-500 text-lg md:text-xl font-medium">Discover our premium range: Royal, Hob, Sleek, and more.</p>
+              <p className="text-zinc-500 text-base md:text-lg">Discover our premium range: Royal, Hob, Sleek, and more.</p>
             </div>
             <Link href="/products?category=knobs" className="hidden md:flex items-center text-zinc-900 font-bold hover:underline underline-offset-8">
               View All Knobs <ArrowRight size={20} className="ml-2" />
@@ -164,7 +164,7 @@ export default function Home() {
                   </div>
                   <div className="p-8">
                     <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">{product.modelNumber}</div>
-                    <h3 className="text-2xl font-bold text-zinc-900 mb-4 group-hover:text-red-600 transition-colors font-space-grotesk">{product.name}</h3>
+                    <h3 className="text-xl font-semibold text-zinc-900 mb-3 group-hover:text-red-600 transition-colors">{product.name}</h3>
                     <div className="flex items-center justify-between">
                       <div className="flex gap-1.5">
                         {product.colors?.map((color, i) => (
@@ -192,10 +192,10 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
             <div className="text-[10px] font-bold text-red-600 uppercase tracking-[0.2em] mb-4">Diversified Range</div>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tighter mb-6 font-space-grotesk leading-tight">
+            <h2 className="text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight mb-5 leading-tight">
               Essential Components
             </h2>
-            <p className="text-zinc-600 text-lg md:text-xl font-medium">
+            <p className="text-zinc-600 text-base md:text-lg">
               We manufacture a comprehensive range of critical LPG stove parts with industrial precision and grade-A materials.
             </p>
           </div>
@@ -218,10 +218,10 @@ export default function Home() {
                     <ArrowRight className="text-zinc-400 group-hover:text-white group-hover:rotate-[-45deg] transition-all" size={24} />
                   </div>
                   <div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-zinc-900 group-hover:text-white mb-3 transition-colors font-space-grotesk leading-tight">
+                    <h3 className="text-xl md:text-2xl font-semibold text-zinc-900 group-hover:text-white mb-2 transition-colors leading-tight">
                       {category.name}
                     </h3>
-                    <p className="text-sm text-zinc-500 group-hover:text-zinc-400 transition-colors line-clamp-2 font-medium">
+                    <p className="text-sm text-zinc-500 group-hover:text-zinc-400 transition-colors line-clamp-2">
                       {category.subCategories?.join(' • ')}
                     </p>
                   </div>
@@ -239,7 +239,7 @@ export default function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-2">
               <div className="p-10 md:p-20 lg:p-24 flex flex-col justify-center order-2 lg:order-1">
                 <div className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em] mb-6">Our Legacy</div>
-                <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-tighter mb-10 font-space-grotesk leading-tight">
+                <h2 className="text-2xl md:text-4xl lg:text-5xl font-semibold text-white tracking-tight mb-8 leading-tight">
                   Faridabad's Trusted LPG Parts Partner
                 </h2>
                 <div className="space-y-10">
@@ -248,8 +248,8 @@ export default function Home() {
                       <ShieldCheck className="text-white" size={28} />
                     </div>
                     <div>
-                      <h4 className="text-white font-bold text-xl mb-2 font-space-grotesk">Since 2013</h4>
-                      <p className="text-zinc-400 leading-relaxed font-medium">Over a decade of consistent delivery and quality improvement in the LPG industry.</p>
+                      <h4 className="text-white font-semibold text-lg mb-2">Since 2013</h4>
+                      <p className="text-zinc-400 leading-relaxed text-sm">Over a decade of consistent delivery and quality improvement in the LPG industry.</p>
                     </div>
                   </div>
                   <div className="flex gap-6">
@@ -257,8 +257,8 @@ export default function Home() {
                       <Settings className="text-white" size={28} />
                     </div>
                     <div>
-                      <h4 className="text-white font-bold text-xl mb-2 font-space-grotesk">Industrial Excellence</h4>
-                      <p className="text-zinc-400 leading-relaxed font-medium">Our facility in Saroorpur Industrial Area is optimized for high-volume manufacturing.</p>
+                      <h4 className="text-white font-semibold text-lg mb-2">Industrial Excellence</h4>
+                      <p className="text-zinc-400 leading-relaxed text-sm">Our facility in Saroorpur Industrial Area is optimized for high-volume manufacturing.</p>
                     </div>
                   </div>
                 </div>
@@ -276,7 +276,7 @@ export default function Home() {
                   className="object-cover opacity-40 grayscale hover:grayscale-0 transition-all duration-1000"
                 />
                 <div className="relative z-10 text-center px-12">
-                  <div className="text-[12rem] md:text-[18rem] font-bold text-white/5 font-space-grotesk select-none">SR</div>
+                  <div className="text-[12rem] md:text-[18rem] font-semibold text-white/5 select-none">SR</div>
                   <div className="text-white/40 text-[10px] md:text-xs font-bold tracking-[0.4em] uppercase">Industrial Prowess</div>
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-r from-zinc-900 to-transparent lg:block hidden" />
@@ -299,10 +299,10 @@ export default function Home() {
               <MessageSquare size={14} />
               <span>Bulk Orders</span>
             </div>
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-8 font-space-grotesk leading-tight">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-semibold tracking-tight mb-6 leading-tight">
               Ready for Bulk <span className="text-zinc-400">Enquiry?</span>
             </h2>
-            <p className="text-lg md:text-xl text-zinc-500 mb-12 max-w-2xl mx-auto leading-relaxed font-medium">
+            <p className="text-base md:text-lg text-zinc-500 mb-10 max-w-2xl mx-auto leading-relaxed">
               Partner with SR Industries for reliable, high-quality LPG components. We handle custom specifications and large-scale bulk requirements.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">

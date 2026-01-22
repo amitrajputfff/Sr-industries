@@ -51,7 +51,7 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-7xl font-bold tracking-tighter mb-8 font-space-grotesk text-zinc-900 leading-tight"
+            className="text-3xl md:text-5xl lg:text-6xl font-semibold tracking-tight mb-6 text-zinc-900 leading-tight"
           >
             LPG Stove Parts <span className="text-zinc-400">Specialists</span>
           </motion.h1>
@@ -59,7 +59,7 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-lg md:text-2xl text-zinc-600 leading-relaxed max-w-3xl font-medium"
+            className="text-base md:text-xl text-zinc-600 leading-relaxed max-w-3xl"
           >
             SR Industries is a premier Faridabad-based manufacturer dedicated to the production of high-precision LPG stove components.
           </motion.p>
@@ -74,7 +74,7 @@ export default function AboutPage() {
             className="space-y-8 text-base md:text-lg text-zinc-600 leading-relaxed order-2 lg:order-1"
           >
             <div className="space-y-6">
-              <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 font-space-grotesk">Founded on Precision</h2>
+              <h2 className="text-xl md:text-2xl font-semibold text-zinc-900">Founded on Precision</h2>
               <p>
                 Established in 2013, SR Industries began with a commitment to address the industry's need for high-durability LPG components. Located in the Saroorpur Industrial Area of Ballabhgarh, we have scaled our operations to serve leading domestic and industrial stove brands across the country.
               </p>
@@ -102,8 +102,8 @@ export default function AboutPage() {
           >
             <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80')] bg-cover bg-center" />
             <div className="relative z-10">
-              <span className="text-5xl md:text-7xl font-bold text-white font-space-grotesk block mb-4">10+</span>
-              <span className="text-lg md:text-xl font-bold text-white/80 uppercase tracking-widest">Years of Manufacturing Excellence</span>
+              <span className="text-4xl md:text-6xl font-semibold text-white block mb-4">10+</span>
+              <span className="text-base md:text-lg font-semibold text-white/80 uppercase tracking-widest">Years of Manufacturing Excellence</span>
             </div>
           </motion.div>
         </div>
@@ -111,8 +111,8 @@ export default function AboutPage() {
         {/* Timeline Section */}
         <div className="mb-24 md:mb-32">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tighter font-space-grotesk text-zinc-900">Our Milestones</h2>
-            <p className="text-zinc-500 mt-4 font-medium">A decade of industrial growth and excellence.</p>
+            <h2 className="text-2xl md:text-4xl font-semibold tracking-tight text-zinc-900">Our Milestones</h2>
+            <p className="text-zinc-500 mt-4">A decade of industrial growth and excellence.</p>
           </div>
           
           <div className="max-w-3xl mx-auto">
@@ -131,8 +131,8 @@ export default function AboutPage() {
                   {item.year.slice(2)}
                 </div>
                 <div className="pt-3">
-                  <h4 className="text-xl font-bold text-zinc-900 mb-2 font-space-grotesk">{item.year}</h4>
-                  <p className="text-zinc-500 font-medium leading-relaxed">{item.event}</p>
+                  <h4 className="text-lg font-semibold text-zinc-900 mb-2">{item.year}</h4>
+                  <p className="text-zinc-500 leading-relaxed">{item.event}</p>
                 </div>
               </motion.div>
             ))}
@@ -143,8 +143,8 @@ export default function AboutPage() {
         <div className="bg-zinc-50 rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-20 border border-zinc-100">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-16 gap-6 md:gap-8">
             <div className="max-w-xl">
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4 font-space-grotesk text-zinc-900">Industrial Values</h2>
-              <p className="text-zinc-600 font-medium">Our operations are rooted in engineering integrity and long-term reliability.</p>
+              <h2 className="text-2xl md:text-4xl font-semibold tracking-tight mb-4 text-zinc-900">Industrial Values</h2>
+              <p className="text-zinc-600">Our operations are rooted in engineering integrity and long-term reliability.</p>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
@@ -160,8 +160,8 @@ export default function AboutPage() {
                 <div className="w-12 h-12 md:w-14 md:h-14 bg-zinc-900 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-zinc-200 transition-transform group-hover:scale-110">
                   {value.icon}
                 </div>
-                <h3 className="text-xl font-bold mb-4 text-zinc-900 font-space-grotesk">{value.title}</h3>
-                <p className="text-zinc-500 text-sm leading-relaxed font-medium">
+                <h3 className="text-lg font-semibold mb-3 text-zinc-900">{value.title}</h3>
+                <p className="text-zinc-500 text-sm leading-relaxed">
                   {value.description}
                 </p>
               </motion.div>
@@ -171,8 +171,8 @@ export default function AboutPage() {
 
         {/* Regional Presence */}
         <div className="mt-24 md:mt-32 text-center max-w-2xl mx-auto px-4">
-          <h3 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-6 font-space-grotesk">Regional Presence</h3>
-          <p className="text-zinc-600 text-base md:text-lg leading-relaxed mb-8 font-medium">
+          <h3 className="text-xl md:text-2xl font-semibold text-zinc-900 mb-5">Regional Presence</h3>
+          <p className="text-zinc-600 text-sm md:text-base leading-relaxed mb-8">
             Headquartered in Faridabad, Haryana, we are strategically positioned to supply the major industrial hubs across India, ensuring reliable lead times for bulk requirements.
           </p>
         </div>

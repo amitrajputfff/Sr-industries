@@ -15,7 +15,12 @@ export interface Product {
     height?: string;
     [key: string]: string | undefined;
   };
-  colors?: string[]; // Visual dots
+  colors?: string[]; // Deprecated - use colorVariants instead
+  colorVariants?: {
+    color: string;      // hex color code
+    name: string;       // e.g., "Black", "Silver"
+    image: string;      // URL to color-specific image
+  }[];
 }
 
 export interface Category {
@@ -26,9 +31,9 @@ export interface Category {
 }
 
 export const BRAND_ASSETS = {
-  logoPrimary: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/d8b609a8-e1e8-4f43-a882-a3eb0e843247/Screenshot-2026-01-22-at-10.03.57-PM-1769099641705.png?width=8000&height=8000&resize=contain",
-  logoSquare: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/d8b609a8-e1e8-4f43-a882-a3eb0e843247/Screenshot-2026-01-22-at-10.03.57-PM-1769099641705.png?width=8000&height=8000&resize=contain",
-  logoFooter: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/d8b609a8-e1e8-4f43-a882-a3eb0e843247/Screenshot-2026-01-22-at-10.03.48-PM-1769099632415.png?width=8000&height=8000&resize=contain",
+  logoPrimary: "/logo.png",
+  logoSquare: "/logo.png",
+  logoFooter: "/logo.png",
   heroImage: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/d8b609a8-e1e8-4f43-a882-a3eb0e843247/ChatGPT-Image-Jan-22-2026-10_04_21-PM-1769099670050.png?width=8000&height=8000&resize=contain",
 };
 
@@ -98,7 +103,28 @@ export const PRODUCTS: Product[] = [
       weight: '14.5g',
       material: 'ABS / Nylon',
     },
-    colors: ['#000000', '#C0C0C0', '#FF0000', '#FFFFFF'],
+    colorVariants: [
+      {
+        color: '#000000',
+        name: 'Black',
+        image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80',
+      },
+      {
+        color: '#C0C0C0',
+        name: 'Silver',
+        image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80',
+      },
+      {
+        color: '#FF0000',
+        name: 'Red',
+        image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80',
+      },
+      {
+        color: '#FFFFFF',
+        name: 'White',
+        image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80',
+      },
+    ],
   },
   {
     id: 'k-hob-01',
@@ -115,7 +141,23 @@ export const PRODUCTS: Product[] = [
       weight: '16.2g',
       material: 'Nylon (Heat Resistant)',
     },
-    colors: ['#000000', '#333333', '#1A1A1A'],
+    colorVariants: [
+      {
+        color: '#000000',
+        name: 'Black',
+        image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80',
+      },
+      {
+        color: '#333333',
+        name: 'Dark Grey',
+        image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80',
+      },
+      {
+        color: '#1A1A1A',
+        name: 'Charcoal',
+        image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80',
+      },
+    ],
   },
   {
     id: 'k-sleek-01',
@@ -132,7 +174,18 @@ export const PRODUCTS: Product[] = [
       weight: '11.8g',
       material: 'ABS',
     },
-    colors: ['#000000', '#E5E4E2'],
+    colorVariants: [
+      {
+        color: '#000000',
+        name: 'Black',
+        image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80',
+      },
+      {
+        color: '#E5E4E2',
+        name: 'Platinum',
+        image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80',
+      },
+    ],
   },
   {
     id: 'k-euro-01',
@@ -149,7 +202,18 @@ export const PRODUCTS: Product[] = [
       weight: '13.5g',
       material: 'ABS',
     },
-    colors: ['#000000', '#808080'],
+    colorVariants: [
+      {
+        color: '#000000',
+        name: 'Black',
+        image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80',
+      },
+      {
+        color: '#808080',
+        name: 'Grey',
+        image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80',
+      },
+    ],
   },
   {
     id: 'k-vguard-01',
@@ -166,7 +230,18 @@ export const PRODUCTS: Product[] = [
       weight: '17.8g',
       material: 'Nylon',
     },
-    colors: ['#000000', '#FF0000'],
+    colorVariants: [
+      {
+        color: '#000000',
+        name: 'Black',
+        image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80',
+      },
+      {
+        color: '#FF0000',
+        name: 'Red',
+        image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80',
+      },
+    ],
   },
   {
     id: 'k-metal-01',
@@ -183,7 +258,23 @@ export const PRODUCTS: Product[] = [
       weight: '48.0g',
       material: 'Zinc Alloy / Metal',
     },
-    colors: ['#C0C0C0', '#848482', '#FFD700'],
+    colorVariants: [
+      {
+        color: '#C0C0C0',
+        name: 'Silver',
+        image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80',
+      },
+      {
+        color: '#848482',
+        name: 'Gunmetal',
+        image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80',
+      },
+      {
+        color: '#FFD700',
+        name: 'Gold',
+        image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80',
+      },
+    ],
   },
 
   // --- DIAL PLATES ---

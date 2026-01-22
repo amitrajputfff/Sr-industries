@@ -19,7 +19,7 @@ const NAV_LINKS = [
     href: '/products?category=knobs',
     submenu: CATEGORIES.find(c => c.id === 'knobs')?.subCategories?.map(sub => ({
       name: sub,
-      href: `/products?category=knobs&sub=${sub.replace(' Series', '').toLowerCase()}`
+      href: `/products?category=knobs&sub=${sub.toLowerCase()}`
     }))
   },
   {
@@ -62,15 +62,15 @@ export function Navbar() {
                 src={BRAND_ASSETS.logoSquare} 
                 alt="SR Industries Logo" 
                 fill 
-                className="object-contain"
+                className="object-contain drop-shadow-none"
                 priority
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg md:text-xl font-bold tracking-tighter text-zinc-900 leading-none">
+              <span className="text-base md:text-lg font-semibold tracking-tight text-zinc-900 leading-none">
                 SR INDUSTRIES
               </span>
-              <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-zinc-500 font-bold">
+              <span className="text-[8px] md:text-[9px] uppercase tracking-widest text-zinc-500 font-medium">
                 LPG Stove Parts
               </span>
             </div>
@@ -87,7 +87,7 @@ export function Navbar() {
               >
                 <Link
                   href={link.href}
-                  className={`text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-1 hover:text-red-600 ${
+                  className={`text-[11px] font-semibold uppercase tracking-wider transition-colors flex items-center gap-1 hover:text-red-600 ${
                     pathname === link.href ? 'text-red-600' : 'text-zinc-700'
                   }`}
                 >
@@ -103,7 +103,7 @@ export function Navbar() {
                           <Link
                             key={sub.name}
                             href={sub.href}
-                            className="text-xs font-bold text-zinc-500 hover:text-red-600 transition-colors uppercase tracking-wider"
+                            className="text-[11px] font-semibold text-zinc-500 hover:text-red-600 transition-colors uppercase tracking-wider"
                           >
                             {sub.name}
                           </Link>
@@ -117,7 +117,7 @@ export function Navbar() {
             <div className="flex items-center gap-3">
               <Link
                 href="tel:+919873741552"
-                className="flex items-center justify-center w-10 h-10 bg-zinc-100 text-zinc-900 rounded-full hover:bg-zinc-200 transition-colors"
+                className="flex items-center justify-center min-w-[44px] min-h-[44px] w-11 h-11 bg-zinc-100 text-zinc-900 rounded-full hover:bg-zinc-200 transition-colors"
                 title="Call Us"
               >
                 <Phone size={18} />
@@ -125,7 +125,7 @@ export function Navbar() {
               <Link
                 href="https://wa.me/919873741552"
                 target="_blank"
-                className="flex items-center space-x-2 bg-zinc-900 text-white px-6 py-3 rounded-xl text-xs font-bold hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-200 group"
+                className="flex items-center space-x-2 bg-zinc-900 text-white px-5 py-2.5 min-h-[44px] rounded-xl text-[11px] font-semibold hover:bg-zinc-800 transition-all shadow-lg shadow-zinc-200 group"
               >
                 <MessageSquare size={16} className="group-hover:scale-110 transition-transform" fill="currentColor" />
                 <span>ENQUIRE NOW</span>
@@ -134,19 +134,28 @@ export function Navbar() {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="flex md:hidden items-center gap-4">
+          <div className="flex md:hidden items-center gap-3">
+            <Link
+              href="https://wa.me/919873741552"
+              target="_blank"
+              className="flex items-center justify-center min-w-[44px] min-h-[44px] w-11 h-11 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors"
+              title="WhatsApp"
+            >
+              <MessageSquare size={20} fill="white" />
+            </Link>
             <Link
               href="tel:+919873741552"
-              className="flex items-center justify-center w-10 h-10 bg-zinc-900 text-white rounded-full"
+              className="flex items-center justify-center min-w-[44px] min-h-[44px] w-11 h-11 bg-zinc-900 text-white rounded-full hover:bg-zinc-800 transition-colors"
+              title="Call Us"
             >
-              <Phone size={18} />
+              <Phone size={20} />
             </Link>
             <button
-              className="text-zinc-900 w-10 h-10 flex items-center justify-center bg-zinc-100 rounded-full"
+              className="text-zinc-900 min-w-[44px] min-h-[44px] w-11 h-11 flex items-center justify-center bg-zinc-100 rounded-full hover:bg-zinc-200 transition-colors"
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle Menu"
             >
-              {isOpen ? <X size={20} /> : <Menu size={20} />}
+              {isOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
@@ -189,7 +198,7 @@ export function Navbar() {
                       <div className="flex items-center justify-between py-4 border-b border-zinc-50">
                         <Link
                           href={link.href}
-                          className={`text-2xl font-bold tracking-tighter ${
+                          className={`text-xl font-semibold tracking-tight ${
                             pathname === link.href ? 'text-zinc-900' : 'text-zinc-400'
                           }`}
                           onClick={() => !link.submenu && setIsOpen(false)}
@@ -218,7 +227,7 @@ export function Navbar() {
                             <Link
                               key={sub.name}
                               href={sub.href}
-                              className="text-lg font-bold text-zinc-500 uppercase tracking-widest"
+                              className="text-base font-semibold text-zinc-500 uppercase tracking-wider"
                               onClick={() => setIsOpen(false)}
                             >
                               {sub.name}
@@ -234,7 +243,7 @@ export function Navbar() {
                   <Link
                     href="https://wa.me/919873741552"
                     target="_blank"
-                    className="flex items-center justify-center space-x-3 bg-zinc-900 text-white w-full py-5 rounded-2xl text-lg font-bold shadow-2xl shadow-zinc-200"
+                    className="flex items-center justify-center space-x-3 bg-zinc-900 text-white w-full py-4 rounded-2xl text-base font-semibold shadow-xl shadow-zinc-200"
                     onClick={() => setIsOpen(false)}
                   >
                     <MessageSquare size={20} fill="white" />
@@ -242,7 +251,7 @@ export function Navbar() {
                   </Link>
                   <Link
                     href="tel:+919873741552"
-                    className="flex items-center justify-center space-x-3 bg-zinc-100 text-zinc-900 w-full py-5 rounded-2xl text-lg font-bold"
+                    className="flex items-center justify-center space-x-3 bg-zinc-100 text-zinc-900 w-full py-4 rounded-2xl text-base font-semibold"
                     onClick={() => setIsOpen(false)}
                   >
                     <Phone size={20} />
