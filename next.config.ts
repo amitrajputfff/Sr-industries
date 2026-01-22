@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
         hostname: '**',
       },
     ],
+    qualities: [75, 90, 100],
   },
   outputFileTracingRoot: path.resolve(__dirname, '../../'),
   typescript: {

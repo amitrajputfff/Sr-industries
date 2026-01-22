@@ -20,12 +20,15 @@ export function ProductCard({ product }: ProductCardProps) {
       className="group bg-white border border-zinc-100 rounded-2xl md:rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col"
     >
       <Link href={`/products/${product.slug}`} className="flex flex-col h-full">
-        <div className="relative aspect-square overflow-hidden bg-zinc-50 border-b border-zinc-100 flex items-center justify-center">
+        <div className="relative aspect-square overflow-hidden border-b border-zinc-100 flex items-center justify-center">
           <Image
             src={product.image}
             alt={product.name}
             fill
-            className="object-cover p-3 md:p-6 transition-transform duration-500 group-hover:scale-110 opacity-90"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            quality={100}
+            unoptimized
+            className="p-3 md:p-6 transition-transform duration-500 group-hover:scale-110 opacity-100"
           />
           <div className="absolute top-2 left-2 md:top-4 md:left-4">
             <span className="text-[8px] md:text-[10px] font-bold bg-zinc-900 text-white px-2 py-0.5 md:py-1 rounded tracking-widest uppercase shadow-lg">

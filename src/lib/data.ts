@@ -110,14 +110,14 @@ export const PRODUCTS: Product[] = [
         image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80',
       },
       {
-        color: '#C0C0C0',
-        name: 'Silver',
-        image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80',
+        color: '#1F6BFF',
+        name: 'Blue',
+        image: '/Royal-series/royal-series-blue.png',
       },
       {
         color: '#FF0000',
         name: 'Red',
-        image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80',
+        image: '/Royal-series/royal-series-red.png',
       },
       {
         color: '#FFFFFF',

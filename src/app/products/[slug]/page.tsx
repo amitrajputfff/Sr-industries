@@ -56,7 +56,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 src={currentImage}
                 alt={`${product.name}${currentColorName ? ` - ${currentColorName}` : ''}`}
                 fill
-                className="object-cover p-6 md:p-12 transition-transform duration-700 group-hover:scale-105 opacity-95"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                quality={100}
+                unoptimized
+                className="object-contain p-6 md:p-12 transition-transform duration-700 group-hover:scale-105"
                 priority
               />
               <div className="absolute top-4 left-4 md:top-8 md:left-8">
@@ -64,7 +67,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                   SR INDUSTRIAL
                 </span>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-tr from-zinc-100/30 to-transparent pointer-events-none" />
             </div>
 
             {/* Color Variations */}
