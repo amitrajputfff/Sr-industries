@@ -32,7 +32,7 @@ const FEATURES = [
 ];
 
 export default function Home() {
-  const knobProducts = PRODUCTS.filter(p => p.category === 'knobs').slice(0, 4);
+  const featuredKnobs = PRODUCTS.filter(p => p.category === 'knobs').slice(0, 6);
 
   return (
     <div className="flex flex-col">
@@ -51,7 +51,7 @@ export default function Home() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
                 </span>
-                <span>ESTABLISHED 2013</span>
+                <span>LPG Stove Parts Manufacturer Since 2013</span>
               </div>
               <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-zinc-900 mb-6 font-space-grotesk leading-[0.9]">
                 Precision LPG <span className="text-zinc-400">Gas Stove</span> Components
@@ -64,7 +64,7 @@ export default function Home() {
                   href="/products"
                   className="w-full sm:w-auto px-8 py-4 bg-zinc-900 text-white rounded-xl font-bold text-lg hover:bg-zinc-800 transition-all flex items-center justify-center group"
                 >
-                  Explore Catalog
+                  View Product Catalog
                   <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
@@ -83,7 +83,7 @@ export default function Home() {
               className="relative aspect-square flex items-center justify-center"
             >
               <div className="absolute inset-0 bg-gradient-to-tr from-zinc-100 to-transparent rounded-full blur-3xl opacity-50" />
-              <div className="relative w-full max-w-md aspect-square bg-zinc-50 border border-zinc-100 rounded-[3rem] shadow-2xl overflow-hidden flex items-center justify-center p-12">
+              <div className="relative w-full max-w-md aspect-square bg-white border border-zinc-100 rounded-[3rem] shadow-2xl overflow-hidden flex items-center justify-center p-12">
                 <Image 
                   src={LOGO_URL} 
                   alt="SR Industries Logo" 
@@ -129,17 +129,17 @@ export default function Home() {
           <div className="flex items-end justify-between mb-16">
             <div>
               <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4 font-space-grotesk">
-                Featured Knob Series
+                Knob Series Showcase
               </h2>
-              <p className="text-zinc-500">Discover our premium range of control knobs for every stove type.</p>
+              <p className="text-zinc-500">Discover our premium range of control knobs: Royal, Hob, Sleek, and more.</p>
             </div>
             <Link href="/products?category=knobs" className="hidden md:flex items-center text-zinc-900 font-bold hover:underline">
-              View All Series <ArrowRight size={20} className="ml-2" />
+              View All Knobs <ArrowRight size={20} className="ml-2" />
             </Link>
           </div>
 
           <div className="flex gap-6 overflow-x-auto pb-8 snap-x no-scrollbar">
-            {knobProducts.map((product) => (
+            {featuredKnobs.map((product) => (
               <motion.div
                 key={product.id}
                 className="min-w-[300px] md:min-w-[400px] snap-start"
@@ -147,21 +147,25 @@ export default function Home() {
               >
                 <Link href={`/products/${product.slug}`} className="group block h-full bg-zinc-50 rounded-3xl border border-zinc-100 overflow-hidden">
                   <div className="aspect-[4/3] bg-zinc-200 flex items-center justify-center text-zinc-400 relative overflow-hidden">
-                    <span className="text-sm font-bold uppercase tracking-widest opacity-20 group-hover:scale-110 transition-transform duration-500">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500 opacity-80"
+                    />
+                    <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
+                    <span className="absolute top-4 left-4 bg-white/90 backdrop-blur text-[10px] font-bold text-red-600 px-3 py-1 rounded-full uppercase tracking-widest z-10">
                       {product.subCategory}
                     </span>
                   </div>
                   <div className="p-8">
-                    <span className="text-[10px] font-bold text-red-600 uppercase tracking-widest mb-2 block">
-                      {product.subCategory}
-                    </span>
                     <h3 className="text-2xl font-bold text-zinc-900 mb-2">{product.name}</h3>
                     <p className="text-sm text-zinc-500 mb-4 line-clamp-1">{product.description}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-mono text-zinc-400">{product.modelNumber}</span>
                       <div className="flex gap-1">
                         {product.colors?.map((color, i) => (
-                          <div key={i} className="w-3 h-3 rounded-full border border-zinc-200" style={{ backgroundColor: color }} />
+                          <div key={i} className="w-4 h-4 rounded-full border border-zinc-200" style={{ backgroundColor: color }} />
                         ))}
                       </div>
                     </div>
@@ -178,7 +182,7 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center max-w-3xl mx-auto mb-20">
             <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-6 font-space-grotesk">
-              Other Product Categories
+              Component Categories
             </h2>
             <p className="text-zinc-600 text-lg">
               Beyond knobs, we manufacture a comprehensive range of essential LPG components with industrial precision.
@@ -206,7 +210,7 @@ export default function Home() {
                       {category.name}
                     </h3>
                     <p className="text-sm text-zinc-500 group-hover:text-zinc-400 transition-colors">
-                      {category.subCategories?.length} Series / Types
+                      {category.subCategories?.join(', ')}
                     </p>
                   </div>
                 </Link>

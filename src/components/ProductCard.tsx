@@ -15,21 +15,18 @@ export function ProductCard({ product }: ProductCardProps) {
       className="group bg-white border border-zinc-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
     >
       <Link href={`/products/${product.slug}`}>
-        <div className="relative aspect-square overflow-hidden bg-zinc-50 border-b border-zinc-100 flex items-center justify-center p-8">
-          <Box size={48} className="text-zinc-200 group-hover:scale-110 transition-transform duration-500" />
+        <div className="relative aspect-square overflow-hidden bg-zinc-50 border-b border-zinc-100 flex items-center justify-center">
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            className="object-cover p-4 transition-transform duration-500 group-hover:scale-110 opacity-80"
+          />
           <div className="absolute top-4 left-4">
             <span className="text-[10px] font-bold bg-zinc-900 text-white px-2 py-1 rounded tracking-widest uppercase">
               {product.modelNumber}
             </span>
           </div>
-          {/* 
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            className="object-contain p-4 transition-transform duration-500 group-hover:scale-110"
-          /> 
-          */}
         </div>
         <div className="p-6">
           <div className="flex justify-between items-start mb-2">
@@ -73,11 +70,11 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="flex items-center justify-between mt-auto pt-4 border-t border-zinc-50">
             <div className="flex gap-1">
               {product.colors?.map((color, i) => (
-                <div key={i} className="w-2.5 h-2.5 rounded-full border border-zinc-200" style={{ backgroundColor: color }} />
+                <div key={i} className="w-3 h-3 rounded-full border border-zinc-200" style={{ backgroundColor: color }} />
               ))}
             </div>
             <div className="flex items-center text-xs font-bold text-zinc-900 group-hover:text-red-600 transition-all">
-              <span>VIEW CATALOG</span>
+              <span>VIEW DETAILS</span>
               <ArrowRight size={14} className="ml-1 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>

@@ -26,13 +26,20 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="pt-32 pb-24">
+    <div className="pt-32 pb-24 bg-white">
       <div className="container mx-auto px-4 md:px-6">
         <div className="max-w-3xl mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center space-x-2 bg-zinc-100 text-zinc-900 px-4 py-2 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase mb-6"
+          >
+            <span>Contact SR Industries</span>
+          </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-bold tracking-tighter mb-6 font-space-grotesk"
+            className="text-5xl md:text-7xl font-bold tracking-tighter mb-6 font-space-grotesk text-zinc-900"
           >
             Get in <span className="text-zinc-400">Touch</span>
           </motion.h1>
@@ -40,68 +47,76 @@ export default function ContactPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-xl text-zinc-600 leading-relaxed"
+            className="text-xl text-zinc-500 leading-relaxed"
           >
-            Have a question or want to discuss a bulk order? Our team is here to help you with precision components.
+            Have a question or want to discuss a bulk order? Our manufacturing team is ready to assist you.
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-32">
           {/* Contact Information */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="space-y-12"
           >
-            <div className="space-y-8">
+            <div className="space-y-10">
               <div className="flex items-start space-x-6">
-                <div className="w-12 h-12 bg-zinc-900 text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg">
-                  <MapPin size={24} />
+                <div className="w-14 h-14 bg-zinc-900 text-white rounded-2xl flex items-center justify-center shrink-0 shadow-xl shadow-zinc-200">
+                  <MapPin size={28} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2 font-space-grotesk">Our Location</h3>
-                  <p className="text-zinc-600 leading-relaxed">
-                    Industrial Area, Phase II,<br />
-                    New Delhi, India - 110020
+                  <h3 className="text-xl font-bold mb-3 font-space-grotesk text-zinc-900">Registered Factory</h3>
+                  <p className="text-zinc-500 leading-relaxed font-medium">
+                    Plot No. 9, Gali No. 11,<br />
+                    Saroorpur Industrial Area, Ballabhgarh,<br />
+                    Faridabad, Haryana – 121004, India
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-6">
-                <div className="w-12 h-12 bg-zinc-900 text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg">
-                  <Phone size={24} />
+                <div className="w-14 h-14 bg-zinc-900 text-white rounded-2xl flex items-center justify-center shrink-0 shadow-xl shadow-zinc-200">
+                  <Phone size={28} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2 font-space-grotesk">Phone & WhatsApp</h3>
-                  <p className="text-zinc-600 leading-relaxed">
-                    +91 98765 43210<br />
-                    +91 11 2345 6789
+                  <h3 className="text-xl font-bold mb-3 font-space-grotesk text-zinc-900">Phone & WhatsApp</h3>
+                  <p className="text-zinc-500 leading-relaxed font-medium">
+                    Main Inquiry: +91 9873741552<br />
+                    WhatsApp: 9873741552
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-6">
-                <div className="w-12 h-12 bg-zinc-900 text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg">
-                  <Mail size={24} />
+                <div className="w-14 h-14 bg-zinc-900 text-white rounded-2xl flex items-center justify-center shrink-0 shadow-xl shadow-zinc-200">
+                  <Mail size={28} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2 font-space-grotesk">Email Us</h3>
-                  <p className="text-zinc-600 leading-relaxed">
-                    info@srindustries.com<br />
-                    sales@srindustries.com
+                  <h3 className="text-xl font-bold mb-3 font-space-grotesk text-zinc-900">Email Us</h3>
+                  <p className="text-zinc-500 leading-relaxed font-medium">
+                    info@srindustries.co.in<br />
+                    sales@srindustries.co.in
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="pt-8">
+            <div className="pt-8 flex flex-col sm:flex-row gap-4">
               <Link
-                href="https://wa.me/91XXXXXXXXXX"
+                href="https://wa.me/919873741552"
                 target="_blank"
-                className="inline-flex items-center space-x-3 bg-zinc-100 hover:bg-zinc-200 text-zinc-900 px-8 py-4 rounded-2xl font-bold transition-all"
+                className="inline-flex items-center justify-center space-x-3 bg-zinc-900 text-white px-8 py-5 rounded-2xl font-bold transition-all shadow-xl shadow-zinc-200"
               >
-                <MessageSquare size={20} />
-                <span>Chat with us on WhatsApp</span>
+                <MessageSquare size={20} fill="white" />
+                <span>Chat on WhatsApp</span>
+              </Link>
+              <Link
+                href="tel:+919873741552"
+                className="inline-flex items-center justify-center space-x-3 bg-zinc-100 hover:bg-zinc-200 text-zinc-900 px-8 py-5 rounded-2xl font-bold transition-all"
+              >
+                <Phone size={20} />
+                <span>Call Directly</span>
               </Link>
             </div>
           </motion.div>
@@ -110,28 +125,28 @@ export default function ContactPage() {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-zinc-50 border border-zinc-100 p-8 md:p-12 rounded-[2.5rem]"
+            className="bg-zinc-50 border border-zinc-100 p-8 md:p-12 rounded-[3rem]"
           >
             {isSubmitted ? (
               <div className="h-full flex flex-col items-center justify-center text-center py-12">
                 <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6">
                   <Send size={40} />
                 </div>
-                <h3 className="text-2xl font-bold mb-4 font-space-grotesk">Message Sent!</h3>
-                <p className="text-zinc-600 mb-8">
-                  Thank you for reaching out. Our team will get back to you shortly.
+                <h3 className="text-2xl font-bold mb-4 font-space-grotesk">Inquiry Received</h3>
+                <p className="text-zinc-500 mb-8 font-medium">
+                  Thank you for reaching out. Our sales team will review your requirements and contact you within 24 hours.
                 </p>
                 <button
                   onClick={() => setIsSubmitted(false)}
-                  className="text-zinc-900 font-bold hover:underline"
+                  className="text-zinc-900 font-bold hover:underline underline-offset-4"
                 >
-                  Send another message
+                  Send another inquiry
                 </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <label htmlFor="name" className="text-sm font-bold text-zinc-900 uppercase tracking-wider">
+                  <label htmlFor="name" className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest ml-1">
                     Full Name
                   </label>
                   <input
@@ -140,12 +155,12 @@ export default function ContactPage() {
                     required
                     value={formState.name}
                     onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                    placeholder="John Doe"
-                    className="w-full px-6 py-4 bg-white border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900 outline-none transition-all"
+                    placeholder="Enter your name"
+                    className="w-full px-6 py-4 bg-white border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-zinc-900 outline-none transition-all font-medium"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="phone" className="text-sm font-bold text-zinc-900 uppercase tracking-wider">
+                  <label htmlFor="phone" className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest ml-1">
                     Phone Number
                   </label>
                   <input
@@ -155,12 +170,12 @@ export default function ContactPage() {
                     value={formState.phone}
                     onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
                     placeholder="+91 98765 43210"
-                    className="w-full px-6 py-4 bg-white border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900 outline-none transition-all"
+                    className="w-full px-6 py-4 bg-white border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-zinc-900 outline-none transition-all font-medium"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="message" className="text-sm font-bold text-zinc-900 uppercase tracking-wider">
-                    Your Message
+                  <label htmlFor="message" className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest ml-1">
+                    Bulk Requirements / Message
                   </label>
                   <textarea
                     id="message"
@@ -168,21 +183,21 @@ export default function ContactPage() {
                     rows={4}
                     value={formState.message}
                     onChange={(e) => setFormState({ ...formState, message: e.target.value })}
-                    placeholder="How can we help you?"
-                    className="w-full px-6 py-4 bg-white border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900 outline-none transition-all resize-none"
+                    placeholder="List the components and quantities you need..."
+                    className="w-full px-6 py-4 bg-white border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-zinc-900 outline-none transition-all resize-none font-medium"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-zinc-900 text-white py-5 rounded-xl font-bold text-lg hover:bg-zinc-800 transition-all flex items-center justify-center space-x-2 disabled:opacity-70 shadow-xl"
+                  className="w-full bg-zinc-900 text-white py-5 rounded-2xl font-bold text-lg hover:bg-zinc-800 transition-all flex items-center justify-center space-x-2 disabled:opacity-70 shadow-2xl shadow-zinc-200"
                 >
                   {isSubmitting ? (
                     <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
                     <>
                       <Send size={20} />
-                      <span>Send Inquiry</span>
+                      <span>Send Enquiry</span>
                     </>
                   )}
                 </button>

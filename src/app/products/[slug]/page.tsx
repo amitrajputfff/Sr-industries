@@ -39,22 +39,19 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             animate={{ opacity: 1, scale: 1 }}
             className="sticky top-32"
           >
-            <div className="relative aspect-square bg-zinc-50 rounded-[3rem] overflow-hidden border border-zinc-100 flex items-center justify-center p-12 lg:p-20 group">
-              <Box size={120} className="text-zinc-200 group-hover:scale-110 transition-transform duration-700 ease-out" />
+            <div className="relative aspect-square bg-zinc-50 rounded-[3rem] overflow-hidden border border-zinc-100 flex items-center justify-center group">
+              <Image
+                src={product.image}
+                alt={product.name}
+                fill
+                className="object-cover p-12 transition-transform duration-700 group-hover:scale-105 opacity-80"
+                priority
+              />
               <div className="absolute top-8 left-8">
                 <span className="px-4 py-1.5 bg-zinc-900 text-white text-[10px] font-bold rounded-full tracking-[0.2em] uppercase">
                   SR INDUSTRIAL
                 </span>
               </div>
-              {/* 
-              <Image
-                src={product.image}
-                alt={product.name}
-                fill
-                className="object-contain p-12 transition-transform duration-700 group-hover:scale-110"
-                priority
-              /> 
-              */}
               <div className="absolute inset-0 bg-gradient-to-tr from-zinc-100/50 to-transparent pointer-events-none" />
             </div>
 
@@ -62,11 +59,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             {product.colors && (
               <div className="mt-8 flex items-center justify-center gap-4">
                 <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Available Colors:</span>
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                   {product.colors.map((color, idx) => (
                     <div 
                       key={idx} 
-                      className="w-6 h-6 rounded-full border-2 border-white shadow-md" 
+                      className="w-8 h-8 rounded-full border-2 border-white shadow-lg ring-1 ring-zinc-100" 
                       style={{ backgroundColor: color }} 
                       title={color}
                     />
@@ -150,13 +147,13 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 className="flex items-center justify-center space-x-3 bg-zinc-900 text-white px-8 py-5 rounded-2xl font-bold text-lg hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-200"
               >
                 <Phone size={20} fill="white" />
-                <span>Enquire Now</span>
+                <span>Enquire on WhatsApp</span>
               </Link>
               <Link
-                href="/contact"
+                href="tel:+919873741552"
                 className="flex items-center justify-center bg-white text-zinc-900 border border-zinc-200 px-8 py-5 rounded-2xl font-bold text-lg hover:bg-zinc-50 transition-all"
               >
-                Bulk Quotation
+                Contact for Bulk Order
               </Link>
             </div>
             

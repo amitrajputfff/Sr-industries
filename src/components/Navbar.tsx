@@ -113,15 +113,15 @@ export function Navbar() {
                   {link.name}
                 </Link>
               ))}
-              <Link
-                href="https://wa.me/91XXXXXXXXXX"
-                target="_blank"
-                className="flex items-center justify-center space-x-2 bg-zinc-900 text-white px-4 py-3 rounded-xl text-lg font-medium"
-                onClick={() => setIsOpen(false)}
-              >
-                <Phone size={20} />
-                <span>WhatsApp Inquiry</span>
-              </Link>
+                <Link
+                  href="https://wa.me/919873741552"
+                  target="_blank"
+                  className="flex items-center justify-center space-x-2 bg-zinc-900 text-white px-4 py-3 rounded-xl text-lg font-medium"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Phone size={20} />
+                  <span>WhatsApp Inquiry</span>
+                </Link>
             </div>
           </motion.div>
         )}
