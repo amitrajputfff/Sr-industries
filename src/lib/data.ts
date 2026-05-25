@@ -7,6 +7,10 @@ export interface Product {
   subCategory?: string; // For Knobs: Royal, Hob, Sleek, etc. For Dial Plates: Prestige, GTM, etc.
   description: string;
   image: string;
+  price?: number;                          // base / single price per piece in INR
+  priceRange?: { min: number; max: number }; // shown on card when per-variant prices aren't set
+  contactForPrice?: boolean;               // shows "Contact for Price" on detail page instead of a number
+  minOrderQty?: number;                    // minimum order quantity in pieces
   specs: {
     shaftSize?: string;
     diameter?: string;
@@ -21,6 +25,7 @@ export interface Product {
     name: string;       // e.g., "Black", "Silver"
     image: string;      // URL to color-specific image
     modelNumber?: string; // e.g., "RS-GL" for Royal Series Gold
+    price?: number;     // per-piece price in INR for this specific variant
   }[];
 }
 
@@ -107,6 +112,7 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Royal Series',
     description: 'Premium quality control knob available in Nylon & ABS materials with ergonomic grip and high-gloss finish.',
     image: '/Royal-series/royal-series-gold.png',
+    minOrderQty: 3000,
     specs: {
       shaftSize: '8 mm',
       diameter: 'Ø 38 mm',
@@ -118,36 +124,42 @@ export const PRODUCTS: Product[] = [
         name: 'Gold',
         image: '/Royal-series/royal-series-gold.png',
         modelNumber: 'RS-GL',
+        price: 8.00,
       },
       {
         color: '#808080',
         name: 'Grey',
         image: '/Royal-series/royal-series-grey.png',
         modelNumber: 'RS-GR',
+        price: 2.50,
       },
       {
         color: '#FF6600',
         name: 'Orange',
         image: '/Royal-series/royal-series-orange.png',
         modelNumber: 'RS-OR',
+        price: 2.50,
       },
       {
         color: '#FF0000',
         name: 'Red',
         image: '/Royal-series/royal-series-red.png',
         modelNumber: 'RS-R',
+        price: 2.50,
       },
       {
         color: '#87CEEB',
         name: 'Light Blue',
         image: '/Royal-series/royal-series-lightblue.png',
         modelNumber: 'RS-LB',
+        price: 2.50,
       },
       {
         color: '#00008B',
         name: 'Dark Blue',
         image: '/Royal-series/royal-series-darkblue.png',
         modelNumber: 'RS-DB',
+        price: 2.50,
       },
     ],
   },
@@ -160,6 +172,7 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Hob Series',
     description: 'Modern minimalist design specifically for built-in gas hobs. Available in ABS material (Shaft Size 6 mm, Weight 10 gm).',
     image: '/Hob-Series/HobSeries-Copper.png',
+    minOrderQty: 3000,
     specs: {
       shaftSize: '6 mm',
       weight: '10 gm',
@@ -171,30 +184,35 @@ export const PRODUCTS: Product[] = [
         name: 'Copper',
         image: '/Hob-Series/HobSeries-Copper.png',
         modelNumber: 'HB-CP',
+        price: 11.00,
       },
       {
         color: '#C0C0C0',
         name: 'Silver',
         image: '/Hob-Series/HobSeries-Silver.png',
         modelNumber: 'HB-SL',
+        price: 11.00,
       },
       {
         color: '#FFD700',
         name: 'Golden',
         image: '/Hob-Series/HobSeries-Golden.png',
         modelNumber: 'HB-GL',
+        price: 11.00,
       },
       {
         color: '#808080',
         name: 'Grey',
         image: '/Hob-Series/HobSeries-Grey.png',
         modelNumber: 'HB-GR',
+        price: 5.50,
       },
       {
         color: '#D2B48C',
         name: 'Natural',
         image: '/Hob-Series/HobSeries-Natural.png',
         modelNumber: 'HB-NT',
+        price: 5.50,
       },
     ],
   },
@@ -207,6 +225,7 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Sleek Series',
     description: 'Thin profile knob for contemporary stove designs. Available in ABS material (Shaft Size 8 mm, Dimensions 34 mm x 18 mm).',
     image: '/Sleek-Series/Sleekseries-Black.png',
+    minOrderQty: 3000,
     specs: {
       shaftSize: '8 mm',
       dimensions: '34 mm x 18 mm',
@@ -217,26 +236,36 @@ export const PRODUCTS: Product[] = [
         color: '#000000',
         name: 'Black',
         image: '/Sleek-Series/Sleekseries-Black.png',
+        modelNumber: 'SL-BL',
+        price: 4.00,
       },
       {
         color: '#B87333',
         name: 'Copper',
         image: '/Sleek-Series/Sleekseries-Copper.png',
+        modelNumber: 'SL-CP',
+        price: 9.00,
       },
       {
         color: '#FFC0CB',
         name: 'Pink',
         image: '/Sleek-Series/Sleekseries-Pink.png',
+        modelNumber: 'SL-PK',
+        price: 6.00,
       },
       {
         color: '#F5F5F5',
         name: 'Painted',
         image: '/Sleek-Series/Sleekseries-Painted.png',
+        modelNumber: 'SL-PT',
+        price: 4.25,
       },
       {
         color: '#FFFFE0',
         name: 'Sticker',
         image: '/Sleek-Series/Sleekseries-Sticker.png',
+        modelNumber: 'SL-ST',
+        price: 7.00,
       },
     ],
   },
@@ -249,6 +278,7 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Euro Series',
     description: 'European style control knob with multiple premium top and ring combinations. Available in Nylon & ABS.',
     image: '/Euro-series/WhiteTop-Black.png',
+    minOrderQty: 3000,
     specs: {
       shaftSize: '6.0 mm',
       diameter: '40 mm',
@@ -260,46 +290,64 @@ export const PRODUCTS: Product[] = [
         color: '#FFFFFF',
         name: 'White Top / Black Ring',
         image: '/Euro-series/WhiteTop-Black.png',
+        modelNumber: 'EU-WBL',
+        price: 8.50,
       },
       {
         color: '#FFD700',
         name: 'White Top / Gold Ring',
         image: '/Euro-series/WhiteTop-Gold.png',
+        modelNumber: 'EU-WGL',
+        price: 8.50,
       },
       {
         color: '#B0B0B0',
         name: 'White Top / Grey Ring',
         image: '/Euro-series/WhiteTop-Gray.png',
+        modelNumber: 'EU-WBL-WGL',
+        price: 8.50,
       },
       {
         color: '#000000',
         name: 'Black Top / Gold Ring',
         image: '/Euro-series/BlackTop-Gold.png',
+        modelNumber: 'EU-BGL',
+        price: 8.50,
       },
       {
         color: '#4F4F4F',
         name: 'Black Top / Grey Ring',
         image: '/Euro-series/BlackTop-Gray.png',
+        modelNumber: 'EU-BBL-BGL',
+        price: 8.50,
       },
       {
         color: '#C0C0C0',
-        name: 'Silver Series / Black Pointer',
+        name: 'Black Silver Series / Black Pointer',
         image: '/Euro-series/SilverSeries-Black.png',
+        modelNumber: 'EU-BSL',
+        price: 15.00,
       },
       {
         color: '#FF0000',
-        name: 'Silver Series / Red Pointer',
+        name: 'Red Silver Series / Red Pointer',
         image: '/Euro-series/SilverSeries-Red.png',
+        modelNumber: 'EU-RSL',
+        price: 15.00,
       },
       {
         color: '#FFFFFF',
         name: 'Silver Series / White Pointer',
         image: '/Euro-series/SilverSeries-White.png',
+        modelNumber: 'EU-BSL',
+        price: 15.00,
       },
       {
         color: '#B87333',
         name: 'Black Copper Series',
         image: '/Euro-series/CopperSeries-Black.png',
+        modelNumber: 'EU-BCP',
+        price: 15.00,
       },
     ],
   },
@@ -312,6 +360,7 @@ export const PRODUCTS: Product[] = [
     subCategory: 'V-Guard Series',
     description: 'Reinforced design for industrial and heavy-duty domestic use. Available in Nylon & ABS.',
     image: '/VGuard-Series/V-GuardSeries-Black.png',
+    minOrderQty: 3000,
     specs: {
       shaftSize: '8 mm',
       diameter: 'Ø 40 mm',
@@ -322,16 +371,22 @@ export const PRODUCTS: Product[] = [
         color: '#000000',
         name: 'Black',
         image: '/VGuard-Series/V-GuardSeries-Black.png',
+        modelNumber: 'VG-BL',
+        price: 4.50,
       },
       {
         color: '#C0C0C0',
         name: 'Silver',
         image: '/VGuard-Series/V-GuardSeries-Silver.png',
+        modelNumber: 'VG-SL',
+        price: 8.50,
       },
       {
         color: '#FFD700',
         name: 'Golden',
         image: '/VGuard-Series/V-GuardSeries-Golden.png',
+        modelNumber: 'VG-GL',
+        price: 9.50,
       },
     ],
   },
@@ -344,6 +399,7 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Metal Series',
     description: 'Premium zinc-alloy knob (Normal model) for high-end designer hobs.',
     image: '/Metal-Series/MetalSeries-Model-1-Black.png',
+    minOrderQty: 3000,
     specs: {
       shaftSize: '8 mm',
       diameter: '40 mm',
@@ -355,16 +411,22 @@ export const PRODUCTS: Product[] = [
         color: '#C0C0C0',
         name: 'Silver',
         image: '/Metal-Series/MetalSeries-Model-1-Silver.png',
+        modelNumber: 'MEBR-SL',
+        price: 40.00,
       },
       {
         color: '#000000',
         name: 'Black',
         image: '/Metal-Series/MetalSeries-Model-1-Black.png',
+        modelNumber: 'MEBR-BL',
+        price: 40.00,
       },
       {
         color: '#FFD700',
         name: 'Copper',
         image: '/Metal-Series/MetalSeries-Model-1-Copper.png',
+        modelNumber: 'MEBR-CP',
+        price: 40.00,
       },
     ],
   },
@@ -378,6 +440,7 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Metal Series',
     description: 'Sleek model zinc-alloy knob with refined profile for premium glass-top hobs.',
     image: '/Metal-Series/MetalSeries-Model-2-Black.png',
+    minOrderQty: 3000,
     specs: {
       shaftSize: '8 mm',
       diameter: '40 mm',
@@ -389,16 +452,22 @@ export const PRODUCTS: Product[] = [
         color: '#000000',
         name: 'Black',
         image: '/Metal-Series/MetalSeries-Model-2-Black.png',
+        modelNumber: 'MEBR-BL',
+        price: 40.00,
       },
       {
         color: '#FFD700',
         name: 'Golden',
         image: '/Metal-Series/MetalSeries-Model-2-Golden.png',
+        modelNumber: 'MEBR-CP',
+        price: 40.00,
       },
       {
         color: '#B87333',
         name: 'Copper',
         image: '/Metal-Series/MetalSeries-Model-2-Copper.png',
+        modelNumber: 'MEBR-CP',
+        price: 40.00,
       },
     ],
   },
@@ -413,6 +482,7 @@ export const PRODUCTS: Product[] = [
     description:
       'High-precision slim profile knob designed for compact glass-top hobs. Ultra Series is available in multiple models (1–5 & Golden) with shaft size 8 mm. Models 1, 2 & 4 use Ø 40 mm, Model 3 uses Ø 32 mm, and Models 5 & Golden are optimised at 35 gm weight.',
     image: '/Ultra-Series/UltaSeriesBlack-Model1.png',
+    minOrderQty: 3000,
     specs: {
       shaftSize: '8 mm',
       diameter: 'Ø 40 mm',
@@ -424,31 +494,43 @@ export const PRODUCTS: Product[] = [
         color: '#000000',
         name: 'Model 1 (Black)',
         image: '/Ultra-Series/UltaSeriesBlack-Model1.png',
+        modelNumber: 'UL-BL',
+        price: 4.00,
       },
       {
         color: '#111111',
         name: 'Model 2 (Black)',
         image: '/Ultra-Series/UltaSeriesBlack-Model2.png',
+        modelNumber: 'ULFB-BL',
+        price: 4.00,
       },
       {
         color: '#222222',
         name: 'Model 3 (Black)',
         image: '/Ultra-Series/UltaSeriesBlack-Model3.png',
+        modelNumber: 'ULGT-BL',
+        price: 3.00,
       },
       {
-        color: '#000000',
+        color: '#333333',
         name: 'Model 4 (Black)',
         image: '/Ultra-Series/UltaSeriesBlack-Model4.png',
+        modelNumber: 'ULTT-BL',
+        price: 3.00,
       },
       {
-        color: '#000000',
+        color: '#444444',
         name: 'Model 5 (Black)',
         image: '/Ultra-Series/UltaSeriesBlack-Model5.png',
+        modelNumber: 'ULBF-BL',
+        price: 3.50,
       },
       {
         color: '#FFD700',
         name: 'Golden Model',
         image: '/Ultra-Series/UltaSeriesGolden.png',
+        modelNumber: 'ULPT-GL',
+        price: 8.50,
       },
     ],
   },
@@ -463,6 +545,9 @@ export const PRODUCTS: Product[] = [
     description:
       'Metal Prima Series premium knobs in SS Matte, Silver, Golden and Black / Chrome variants. Models support shaft sizes 6 mm and 8 mm with weights from 38 gm to 55 gm for precise feel.',
     image: '/MetalPrima-Series/MetalPrimaSeries-SSMATTE.png',
+    priceRange: { min: 55, max: 65 },
+    contactForPrice: true,
+    minOrderQty: 3000,
     specs: {
       shaftSize: '6 mm / 8 mm',
       diameter: '40 mm',
@@ -519,6 +604,8 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Prestige',
     description: 'Prestige series rectangular dial plate with bold, easy-to-read markings. Available in Nylon & ABS.',
     image: '/DialPlate-Series/DialPlateSeries-Presige.png',
+    price: 3.50,
+    minOrderQty: 3000,
     specs: {
       dimensions: '60 mm x 25 mm',
       material: 'Nylon / ABS',
@@ -533,6 +620,8 @@ export const PRODUCTS: Product[] = [
     subCategory: 'GTM',
     description: 'GTM series rectangular dial plate designed for heavy-duty stoves. Available in Nylon & ABS.',
     image: '/DialPlate-Series/DialPlateSeries-GTM.png',
+    price: 3.50,
+    minOrderQty: 3000,
     specs: {
       dimensions: '60 mm x 40 mm',
       material: 'Nylon / ABS',
@@ -547,6 +636,8 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Regular',
     description: 'Regular series dial plate with standard rectangular window for flame graphics. Available in Nylon & ABS.',
     image: '/DialPlate-Series/DialPlateSeries-Regular.png',
+    price: 2.50,
+    minOrderQty: 3000,
     specs: {
       dimensions: '60 mm x 45 mm',
       material: 'Nylon / ABS',
@@ -561,6 +652,8 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Slim',
     description: 'Slim series low-height dial plate suited for compact glass-top stoves. Available in Nylon & ABS.',
     image: '/DialPlate-Series/DialPlateSeries-Slim.png',
+    price: 2.50,
+    minOrderQty: 3000,
     specs: {
       dimensions: '60 mm x 22 mm',
       material: 'Nylon / ABS',
@@ -575,6 +668,8 @@ export const PRODUCTS: Product[] = [
     subCategory: 'China Series',
     description: 'China series dial plate with extended rectangular profile for larger graphics. Available in Nylon & ABS.',
     image: '/DialPlate-Series/DialPlateSeries-China.png',
+    price: 2.75,
+    minOrderQty: 3000,
     specs: {
       dimensions: '90 mm x 45 mm',
       material: 'Nylon / ABS',
@@ -589,6 +684,8 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Round',
     description: 'Round series dial plate with circular layout and clear indexing. Available in Nylon & ABS.',
     image: '/DialPlate-Series/DialPlateSeries-Round.png',
+    price: 3.50,
+    minOrderQty: 3000,
     specs: {
       diameter: 'Ø 55 mm',
       material: 'Nylon / ABS',
@@ -603,6 +700,8 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Engraving',
     description: 'Slim EV engraving series dial plate with deep engraved markings for long life. Available in Nylon & ABS.',
     image: '/DialPlate-Series/DialPlateSeries-Engraving.png',
+    price: 2.00,
+    minOrderQty: 3000,
     specs: {
       dimensions: '60 mm x 22 mm',
       material: 'Nylon / ABS',
@@ -617,6 +716,8 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Round S',
     description: 'Round S compact dial plate with smaller circular form factor. Available in Nylon & ABS.',
     image: '/DialPlate-Series/DialPlateSeries-RoundS.png',
+    price: 3.50,
+    minOrderQty: 3000,
     specs: {
       diameter: 'Ø 45 mm',
       material: 'Nylon / ABS',
@@ -628,11 +729,13 @@ export const PRODUCTS: Product[] = [
     id: 'leg-ls15-01',
     slug: 'leg-ls-15',
     name: 'Stove Leg LS-15',
-    modelNumber: 'SR-LEG-LS-15',
+    modelNumber: 'LS-15',
     category: 'legs',
     subCategory: 'LS-15',
     description: '15mm height standard PVC leg with anti-skid base. Available in PP & ABS.',
     image: '/LegSeries/LegSeries-PVC-LS15.png',
+    price: 3.00,
+    minOrderQty: 3000,
     specs: {
       height: '15 mm',
       material: 'PP / ABS',
@@ -642,11 +745,13 @@ export const PRODUCTS: Product[] = [
     id: 'leg-ls25-01',
     slug: 'leg-ls-25',
     name: 'Stove Leg LS-25',
-    modelNumber: 'SR-LEG-LS-25',
+    modelNumber: 'LS-25',
     category: 'legs',
     subCategory: 'LS-25',
     description: '25mm height PVC leg designed for improved air-flow under the stove. Available in PP & ABS.',
     image: '/LegSeries/LegSeries-PVC-LS25.png',
+    price: 3.00,
+    minOrderQty: 3000,
     specs: {
       height: '25 mm',
       material: 'PP / ABS',
@@ -661,6 +766,8 @@ export const PRODUCTS: Product[] = [
     subCategory: 'LS-20',
     description: '20mm height PVC leg for standard cooktops. Available in PP & ABS.',
     image: '/LegSeries/LegSeries-PVC-LS20.png',
+    price: 6.50,
+    minOrderQty: 3000,
     specs: {
       height: '20 mm',
       material: 'PP / ABS',
@@ -675,6 +782,8 @@ export const PRODUCTS: Product[] = [
     subCategory: 'LS-40',
     description: '40mm height PVC leg for increased clearance and air-flow. Available in PP & ABS.',
     image: '/LegSeries/LegSeries-PVC-LS40.png',
+    price: 4.00,
+    minOrderQty: 3000,
     specs: {
       height: '40 mm',
       material: 'PP / ABS',
@@ -689,6 +798,8 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Round',
     description: 'Round 20mm PVC leg for premium glass-top hobs. Available in PP & ABS.',
     image: '/LegSeries/LegSeries-PVC-lsrd20.png',
+    price: 6.50,
+    minOrderQty: 3000,
     specs: {
       height: '20 mm',
       material: 'PP / ABS',
@@ -705,6 +816,7 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Coupler',
     description: 'Standard brass coupler for secure gas inlet connections on LPG stoves.',
     image: '/CouplerPins/Coupler1-CPB.png',
+    price: 3.00,
     specs: {
       material: 'Brass',
     },
@@ -718,6 +830,7 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Burner Pin',
     description: 'Standard burner pin for domestic LPG stoves.',
     image: '/CouplerPins/BurnerPin.png',
+    price: 1.75,
     specs: {
       material: 'Stainless Steel',
     },
@@ -731,6 +844,7 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Coupler Big',
     description: 'Heavy-duty big coupler for higher capacity LPG stoves and commercial burners.',
     image: '/CouplerPins/Coupler2.png',
+    price: 6.00,
     specs: {
       material: 'Brass',
     },
@@ -739,11 +853,12 @@ export const PRODUCTS: Product[] = [
     id: 'cp-nozzle-ring-01',
     slug: 'nozzle-ring',
     name: 'Nozzle Ring',
-    modelNumber: 'SR-NR',
+    modelNumber: 'SP-NR',
     category: 'coupler-pins',
     subCategory: 'Nozzle Ring',
     description: 'Precision nozzle ring for controlled gas flow and stable flame profile.',
     image: '/CouplerPins/NozzleRing.png',
+    price: 1.50,
     specs: {
       material: 'Brass',
     },
@@ -759,6 +874,7 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Cell Box',
     description: 'Protective cell box housing for hob ignition batteries. Designed for safe and neat cable routing.',
     image: '/AutoSeries/Cellbox-Hob.png',
+    price: 13.50,
     specs: {
       material: 'Flame Retardant Plastic',
     },
@@ -772,6 +888,7 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Cell Box',
     description: 'Battery cell box for gas stove ignition systems with secure mounting design.',
     image: '/AutoSeries/Cellbox-GasStove.png',
+    price: 13.50,
     specs: {
       material: 'Flame Retardant Plastic',
     },
@@ -785,6 +902,7 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Spindle Cap',
     description: 'Precision spindle cap for sealing and protecting valve spindles in LPG hobs and stoves.',
     image: '/AutoSeries/SplinderCap.png',
+    price: 0.50,
     specs: {
       material: 'Nylon',
     },
@@ -798,6 +916,7 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Nozzle Cap',
     description: 'Nozzle cap for controlled gas outflow and protection of burner nozzles.',
     image: '/AutoSeries/NozzleCap.png',
+    price: 0.50,
     specs: {
       material: 'Nylon',
     },
@@ -811,6 +930,7 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Safety Lock',
     description: '30-degree safety locking mechanism for precision control in gas flow operation.',
     image: '/AutoSeries/Safetylock-30degree.png',
+    price: 1.75,
     specs: {
       type: '30 Degree Lock',
       material: 'Nylon',
@@ -825,6 +945,7 @@ export const PRODUCTS: Product[] = [
     subCategory: 'Safety Lock',
     description: '0-degree safety lock mechanism for direct open-close operations with positive locking.',
     image: '/AutoSeries/SafetyLock0degree.png',
+    price: 1.75,
     specs: {
       type: '0 Degree Lock',
       material: 'Nylon',

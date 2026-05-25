@@ -16,17 +16,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
     notFound();
   }
 
-  // Initialize selected color with the first variant or default to 0
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
-  
-  // Get the current image based on selected color
-  const currentImage = product.colorVariants 
-    ? product.colorVariants[selectedColorIndex]?.image || product.image
-    : product.image;
-  
-  const currentColorName = product.colorVariants
-    ? product.colorVariants[selectedColorIndex]?.name
-    : undefined;
+
+  const currentVariant = product.colorVariants?.[selectedColorIndex];
+  const currentImage = currentVariant?.image || product.image;
+  const currentColorName = currentVariant?.name;
+  const currentModelNumber = currentVariant?.modelNumber || product.modelNumber;
+
+  // Resolve price: prefer per-variant price, fall back to product base price
+  const currentPrice: number | undefined = currentVariant?.price ?? product.price;
 
   return (
     <div className="pt-24 md:pt-32 pb-24 bg-white min-h-screen">
@@ -127,7 +125,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                   {product.subCategory || product.category}
                 </span>
                 <div className="h-px flex-1 bg-zinc-100 hidden lg:block" />
-                <span className="text-zinc-400 text-[10px] md:text-xs font-mono">{product.modelNumber}</span>
+                <span className="text-zinc-400 text-[10px] md:text-xs font-mono">{currentModelNumber}</span>
               </div>
               <h1 className="text-3xl md:text-5xl font-semibold tracking-tight text-zinc-900 mb-5 leading-tight">
                 {product.name}
@@ -147,6 +145,63 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 </div>
               </div>
             </div>
+
+            {/* Pricing */}
+            {product.contactForPrice ? (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+                className="mb-10 p-5 bg-zinc-50 border border-zinc-100 rounded-2xl"
+              >
+                <div className="flex items-end justify-between flex-wrap gap-3">
+                  <div>
+                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Price per piece</p>
+                    <p className="text-2xl font-bold text-zinc-900 tracking-tight">Contact for Price</p>
+                    {product.priceRange && (
+                      <p className="text-sm text-zinc-500 mt-1">
+                        Range: ₹{product.priceRange.min} – ₹{product.priceRange.max} / pc
+                      </p>
+                    )}
+                    <p className="text-[10px] text-zinc-400 uppercase tracking-wider mt-1">* Price varies by model & quantity</p>
+                  </div>
+                  <div className="text-right">
+                    {product.minOrderQty && (
+                      <div className="inline-flex flex-col items-end">
+                        <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Min. Order Qty</p>
+                        <p className="text-xl font-bold text-zinc-900">{product.minOrderQty.toLocaleString()} pcs</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ) : currentPrice !== undefined ? (
+              <motion.div
+                key={currentPrice}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+                className="mb-10 p-5 bg-zinc-50 border border-zinc-100 rounded-2xl"
+              >
+                <div className="flex items-end justify-between flex-wrap gap-3">
+                  <div>
+                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Price per piece</p>
+                    <p className="text-4xl font-bold text-zinc-900 tracking-tight">
+                      ₹{currentPrice.toFixed(2)}
+                    </p>
+                    <p className="text-[10px] text-zinc-400 uppercase tracking-wider mt-1">* Price varies by quantity</p>
+                  </div>
+                  <div className="text-right">
+                    {product.minOrderQty && (
+                      <div className="inline-flex flex-col items-end">
+                        <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Min. Order Qty</p>
+                        <p className="text-xl font-bold text-zinc-900">{product.minOrderQty.toLocaleString()} pcs</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ) : null}
 
             {/* Technical Stacked List (Mobile Friendly) */}
             <div className="mb-12">
@@ -176,7 +231,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             {/* Desktop Action Buttons */}
             <div className="hidden lg:grid grid-cols-2 gap-4">
               <Link
-                href={`https://wa.me/919873741552?text=Hi SR Industries, I am interested in ${product.name} (Model: ${product.modelNumber}). Please share bulk pricing.`}
+                href={`https://wa.me/919873741552?text=${encodeURIComponent(`Hi SR Industries, I am interested in ${product.name} (Model: ${currentModelNumber}). Please share bulk pricing.`)}`}
                 target="_blank"
                 className="group relative flex items-center justify-center gap-3 bg-[#25D366] text-white px-8 py-5 rounded-2xl font-semibold text-base overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-green-200 hover:-translate-y-0.5"
               >
@@ -203,6 +258,25 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
 
       {/* Sticky Mobile CTA Bar */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-zinc-100 p-4 z-50 shadow-[0_-10px_40px_rgba(0,0,0,0.08)]">
+        {(currentPrice !== undefined || product.contactForPrice) && (
+          <div className="flex items-baseline justify-between mb-3 px-1">
+            <div className="flex items-baseline gap-2">
+              {product.contactForPrice ? (
+                <span className="text-lg font-bold text-zinc-900">Contact for Price</span>
+              ) : (
+                <>
+                  <span className="text-2xl font-bold text-zinc-900">₹{currentPrice!.toFixed(2)}</span>
+                  <span className="text-[10px] text-zinc-400 uppercase tracking-wider">/ pc</span>
+                </>
+              )}
+            </div>
+            {product.minOrderQty && (
+              <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
+                MOQ: {product.minOrderQty.toLocaleString()} pcs
+              </span>
+            )}
+          </div>
+        )}
         <div className="flex gap-3">
           <Link
             href="tel:+919873741552"
@@ -211,7 +285,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             <Phone size={24} />
           </Link>
           <Link
-            href={`https://wa.me/919873741552?text=Hi SR Industries, I am interested in ${product.name} (Model: ${product.modelNumber}). Please share bulk pricing.`}
+            href={`https://wa.me/919873741552?text=${encodeURIComponent(`Hi SR Industries, I am interested in ${product.name} (Model: ${currentModelNumber}). Please share bulk pricing.`)}`}
             target="_blank"
             className="flex-grow flex items-center justify-center gap-3 bg-[#25D366] text-white py-4 rounded-2xl font-bold text-sm active:scale-[0.98] transition-all"
           >
