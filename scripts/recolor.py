@@ -10,11 +10,16 @@ from scipy import ndimage
 
 import shutil
 R = 'scripts/replacements'
-# (folder, clean stand-in, finishes to make from it)
+# (folder, clean stand-in, finishes to make from it, recolour only the coloured
+# metal and keep a dark inlay as it is)
 JOBS = [
-    ('Hob-Series', 'HobSeries-Grey', ['HobSeries-Golden', 'HobSeries-Natural', 'HobSeries-Copper']),
-    ('Sleek-Series', 'Sleekseries-Black', ['Sleekseries-Copper', 'Sleekseries-Pink']),
+    ('Hob-Series', 'HobSeries-Grey', ['HobSeries-Golden', 'HobSeries-Natural', 'HobSeries-Copper'], False),
+    ('Sleek-Series', 'Sleekseries-Black', ['Sleekseries-Copper', 'Sleekseries-Pink'], False),
+    ('Metal-Series', 'MetalSeries-Model-2-Copper', ['MetalSeries-Model-2-Golden', 'MetalSeries-Model-2-Black'], True),
 ]
+
+def chroma(lab):
+    return np.hypot(lab[..., 1] - 128, lab[..., 2] - 128)
 # finishes that look the same as the stand-in (Painted is black too)
 SAME = [('Sleek-Series', 'Sleekseries-Black', 'Sleekseries-Painted')]
 
@@ -27,11 +32,16 @@ def part_mask(img):
         fg = lab == (int(np.argmax(sizes)) + 1)
     return ndimage.binary_fill_holes(fg)
 
-def tones(path):
+def tones(path, body_only=False):
     """Five LAB colours along the lightness range of the real part."""
     img = cv2.imread(path)
     m = part_mask(img)
     lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB).astype(np.float32)[m]
+    if body_only:
+        # sample the coloured metal, not the dark inlay, unless the finish itself is neutral
+        col = lab[chroma(lab) > 14]
+        if len(col) > len(lab) * 0.2:
+            lab = col
     order = np.argsort(lab[:, 0])
     out = []
     # skip the darkest 12%: the captured mouse pointer and edge shadow
@@ -40,9 +50,14 @@ def tones(path):
         out.append(np.median(sl, axis=0))
     return np.array(out)
 
-def recolor(folder, base, finishes):
+def recolor(folder, base, finishes, body_only):
     src = cv2.imread(f'{R}/{folder}/{base}.png')
-    mask = ndimage.binary_erosion(part_mask(src), iterations=1)  # drop the pale rim pixels
+    part = ndimage.binary_erosion(part_mask(src), iterations=1)  # drop the pale rim pixels
+    mask = part
+    if body_only:
+        slab = cv2.cvtColor(src, cv2.COLOR_BGR2LAB).astype(np.float32)
+        mask = part & ((chroma(slab) > 12) | (slab[..., 0] > 200))
+        mask = ndimage.binary_closing(mask, iterations=2) & part
     # smooth the grain a little first so the tone stretch does not exaggerate it
     L = cv2.cvtColor(cv2.bilateralFilter(src, 7, 18, 5), cv2.COLOR_BGR2LAB)[..., 0].astype(np.float32)
     # each pixel's rank in the grey photo's tones, so the result takes on the real
@@ -54,13 +69,20 @@ def recolor(folder, base, finishes):
     stops = np.array([0.0, 0.25, 0.5, 0.75, 1.0])
 
     for name in finishes:
-        tn = tones(f'public/{folder}/{name}.png')
+        tn = tones(f'public/{folder}/{name}.png', body_only)
         out = np.zeros(src.shape, np.float32)
         for c in range(3):
             out[..., c] = np.interp(t, stops, tn[:, c])
+        if body_only and tn[:, 0].mean() > 80:
+            # polished metal: keep most of the photo's own highlights so it still shines
+            sL = cv2.cvtColor(src, cv2.COLOR_BGR2LAB)[..., 0].astype(np.float32)
+            out[..., 0] = sL * 0.65 + out[..., 0] * 0.35
         rgb = cv2.cvtColor(out.clip(0, 255).astype(np.uint8), cv2.COLOR_LAB2BGR)
         a = cv2.GaussianBlur(mask.astype(np.float32), (3, 3), 0)[..., None]
-        res = rgb * a + 255 * (1 - a)
+        keep = src if body_only else np.full_like(src, 255)
+        res = rgb * a + keep * (1 - a)
+        if body_only:
+            res[~part] = 255
         cv2.imwrite(f'{R}/{folder}/{name}.png', res.clip(0, 255).astype(np.uint8))
         print('wrote', name)
 
