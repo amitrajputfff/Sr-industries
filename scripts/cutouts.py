@@ -6,6 +6,9 @@ Run: python3 scripts/cutouts.py
 """
 import glob, os
 import numpy as np, cv2
+import sys
+sys.path.insert(0, 'scripts')
+import esrgan
 from scipy import ndimage
 
 SKIP = ('Royal-series', 'Euro-series')
@@ -101,15 +104,21 @@ def retouch(img, a, fg, clean=True):
     ph, pw = pa.shape
     # sharpen once at source resolution, only along real edges so surfaces stay clean
     pe = edges[y0:y1, x0:x1][..., None]
-    part = part + (part - cv2.GaussianBlur(part, (0, 0), 0.8)) * 0.8 * pe
+    if not esrgan.available():
+        part = part + (part - cv2.GaussianBlur(part, (0, 0), 0.8)) * 0.8 * pe
     # scale the part to fill 64% of the square on its long side, Lanczos
     sc = SIZE * 0.64 / max(ph, pw)
     nw, nh = max(1, round(pw * sc)), max(1, round(ph * sc))
-    part = cv2.resize(part, (nw, nh), interpolation=cv2.INTER_LANCZOS4)
+    if esrgan.available():
+        # Real-ESRGAN rebuilds edges and texture at 4x, then we scale down to size
+        up = esrgan.upscale4(part.clip(0, 255).astype(np.uint8)).astype(np.float32)
+        part = cv2.resize(up, (nw, nh), interpolation=cv2.INTER_AREA)
+    else:
+        part = cv2.resize(part, (nw, nh), interpolation=cv2.INTER_LANCZOS4)
     pa = cv2.resize(pa, (nw, nh), interpolation=cv2.INTER_LINEAR).clip(0, 1)
     # two-radius unsharp mask: fine edges, then a little mid-tone clarity
     pe = cv2.resize(pe, (nw, nh), interpolation=cv2.INTER_LINEAR)[..., None]
-    part = part + (part - cv2.GaussianBlur(part, (0, 0), 1.0)) * 0.45 * pe
+    part = part + (part - cv2.GaussianBlur(part, (0, 0), 1.0)) * (0.15 if esrgan.available() else 0.45) * pe
     part = cv2.addWeighted(part, 1.18, cv2.GaussianBlur(part, (0, 0), 4.0), -0.18, 0)
 
     canvas = np.full((SIZE, SIZE, 3), 255, np.float32)
