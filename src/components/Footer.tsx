@@ -1,119 +1,57 @@
-import Image from 'next/image';
 import Link from 'next/link';
-import { Mail, Phone, MapPin, Instagram, Facebook, Linkedin } from 'lucide-react';
-import { BRAND_ASSETS, CONTACT_DATA } from '@/lib/data';
+import Image from 'next/image';
+import { CATEGORIES, CONTACT_DATA } from '@/lib/data';
+import { PHONE_HREF, PRICE_LIST_PDF, WHATSAPP_HREF, FOUNDED } from '@/lib/catalog';
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
-
   return (
-    <footer className="bg-zinc-950 text-zinc-400 py-16">
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-          {/* Brand Column */}
-            <div className="md:col-span-1">
-              <Link href="/" className="flex items-center space-x-2 mb-6">
-                <div className="relative w-12 h-12">
-                  <Image 
-                    src={BRAND_ASSETS.logoFooter} 
-                    alt="SR Industries" 
-                    fill 
-                    className="object-contain"
-                    style={{ filter: 'brightness(0) invert(1)' }}
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-base font-semibold tracking-tight text-white leading-none">
-                    SR INDUSTRIES
-                  </span>
-                  <span className="text-[8px] uppercase tracking-widest text-zinc-400 font-medium">
-                    LPG Stove Parts
-                  </span>
-                </div>
-              </Link>
-            <p className="text-sm leading-relaxed mb-6">
-              Faridabad-based premier manufacturer of LPG gas stove components since 2013. Precision, quality, and durability in every part.
-            </p>
-            <div className="flex space-x-4">
-              <Link href="#" className="hover:text-white transition-colors">
-                <Instagram size={20} />
-              </Link>
-              <Link href="#" className="hover:text-white transition-colors">
-                <Facebook size={20} />
-              </Link>
-              <Link href="#" className="hover:text-white transition-colors">
-                <Linkedin size={20} />
-              </Link>
+    <footer className="footer">
+      <div className="container">
+        <p className="footer-statement">Send us the model code. We’ll send the bulk price.</p>
+        <div className="footer-grid">
+          <div>
+            <div className="footer-brand">
+              <Image src="/logo-mark.png" alt="SR Industries logo" width={18} height={34} />
+              <strong>SR Industries</strong>
             </div>
+            <address>{CONTACT_DATA.address}</address>
           </div>
-
-          {/* Quick Links */}
           <div>
-            <h4 className="text-white font-semibold mb-6">Quick Links</h4>
-            <ul className="space-y-4 text-sm">
+            <h2>Catalogue</h2>
+            <ul>
+              {CATEGORIES.map((c) => (
+                <li key={c.id}>
+                  <Link href={`/products?category=${c.slug}`}>{c.name}</Link>
+                </li>
+              ))}
               <li>
-                <Link href="/" className="hover:text-white transition-colors">Home</Link>
-              </li>
-              <li>
-                <Link href="/products" className="hover:text-white transition-colors">Products Catalog</Link>
-              </li>
-              <li>
-                <Link href="/about" className="hover:text-white transition-colors">Our Story</Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link>
+                <a href={PRICE_LIST_PDF} download>Price list (PDF)</a>
               </li>
             </ul>
           </div>
-
-          {/* Products */}
           <div>
-            <h4 className="text-white font-semibold mb-6">Categories</h4>
-            <ul className="space-y-4 text-sm">
-              <li>
-                <Link href="/products?category=knobs" className="hover:text-white transition-colors">Knob Series</Link>
-              </li>
-              <li>
-                <Link href="/products?category=dial-plates" className="hover:text-white transition-colors">Dial Plates</Link>
-              </li>
-              <li>
-                <Link href="/products?category=legs" className="hover:text-white transition-colors">Stove Legs</Link>
-              </li>
-              <li>
-                <Link href="/products?category=auto-safety" className="hover:text-white transition-colors">Safety Components</Link>
-              </li>
+            <h2>Company</h2>
+            <ul>
+              <li><Link href="/">Home</Link></li>
+              <li><Link href="/products">All products</Link></li>
+              <li><Link href="/about">About us</Link></li>
+              <li><Link href="/contact">Contact</Link></li>
             </ul>
           </div>
-
-          {/* Contact Info */}
           <div>
-            <h4 className="text-white font-semibold mb-6">Registered Office</h4>
-            <ul className="space-y-4 text-sm">
-              <li className="flex items-start space-x-3">
-                <MapPin size={18} className="text-red-500 shrink-0" />
-                <span>
-                  {CONTACT_DATA.address}
-                </span>
-              </li>
-              <li className="flex items-center space-x-3">
-                <Phone size={18} className="text-red-500 shrink-0" />
-                <span>{CONTACT_DATA.phone}</span>
-              </li>
-              <li className="flex items-center space-x-3">
-                <Mail size={18} className="text-red-500 shrink-0" />
-                <span>{CONTACT_DATA.email}</span>
-              </li>
+            <h2>Talk to the factory</h2>
+            <ul>
+              <li><a href={PHONE_HREF}>{CONTACT_DATA.phone}</a></li>
+              <li><a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+              <li><a href={`mailto:${CONTACT_DATA.email}`}>{CONTACT_DATA.email}</a></li>
             </ul>
           </div>
         </div>
-
-        <div className="pt-8 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-center text-xs">
-          <p>© {currentYear} SR Industries. All rights reserved.</p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
-          </div>
+        <div className="footer-legal">
+          <span>© {new Date().getFullYear()} SR Industries, Faridabad. Making gas stove parts since {FOUNDED}.</span>
+          <span>Prices are per piece and vary with quantity.</span>
         </div>
+        <p className="footer-ghost" aria-hidden>SR Industries</p>
       </div>
     </footer>
   );

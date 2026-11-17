@@ -1,347 +1,151 @@
-'use client';
-
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import React, { useState, useEffect, Suspense, useMemo } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ProductCard } from '@/components/ProductCard';
-import { PRODUCTS, CATEGORIES } from '@/lib/data';
-import { Search, X, ChevronRight, Filter } from 'lucide-react';
+import { CATEGORIES, PRODUCTS } from '@/lib/data';
+import { PRICE_LIST_PDF, SITE_URL, getCategory } from '@/lib/catalog';
+import { Download } from 'lucide-react';
+import { CatalogueGrid } from '@/components/CatalogueGrid';
+import { JsonLd } from '@/components/JsonLd';
 
-function ProductsContent() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  
-  const initialCategory = searchParams.get('category') || 'knobs';
-  const initialSubCategory = searchParams.get('sub') || 'all';
-  
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
-  const [selectedSubCategory, setSelectedSubCategory] = useState(initialSubCategory);
-  const [searchQuery, setSearchQuery] = useState('');
+type SP = Promise<{ category?: string; sub?: string }>;
 
-  useEffect(() => {
-    const category = searchParams.get('category');
-    const sub = searchParams.get('sub');
-    if (category) setSelectedCategory(category);
-    if (sub) setSelectedSubCategory(sub);
-  }, [searchParams]);
+const CATEGORY_COPY: Record<string, { title: string; description: string }> = {
+  knobs: {
+    title: 'Gas Stove Knobs: Royal, Hob, Sleek, Euro, Metal and Ultra Series',
+    description: 'Gas stove and hob knobs in Nylon, ABS and zinc alloy, 6 mm and 8 mm shafts, in many finishes. Bulk supply from SR Industries, Faridabad. MOQ 3,000 pieces.',
+  },
+  'dial-plates': {
+    title: 'Gas Stove Dial Plates: Prestige, GTM, Slim, Round and more',
+    description: 'Dial plates for LPG gas stoves in Nylon and ABS: Prestige, GTM, Regular, Slim, China, Round, Round S and Engraving series. Bulk prices from SR Industries.',
+  },
+  legs: {
+    title: 'Gas Stove Legs: LS-15, LS-20, LS-25, LS-40 and Round',
+    description: 'PVC gas stove legs in PP and ABS, 15 mm to 40 mm heights and a round leg for glass-top hobs. Bulk supply from SR Industries, Faridabad.',
+  },
+  'coupler-pins': {
+    title: 'Gas Stove Couplers, Burner Pins and Nozzle Rings',
+    description: 'Brass couplers, big couplers, burner pins and nozzle rings for LPG stoves, priced per piece for bulk orders. SR Industries, Faridabad.',
+  },
+  'auto-safety': {
+    title: 'Gas Stove Cell Boxes, Safety Locks, Spindle and Nozzle Caps',
+    description: 'Auto-ignition cell boxes, 0° and 30° safety locks, spindle caps and nozzle caps for gas stoves and hobs. Bulk supply from SR Industries.',
+  },
+};
 
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-
-  const currentCategoryData = useMemo(() => 
-    CATEGORIES.find(c => c.slug === selectedCategory),
-    [selectedCategory]
-  );
-
-  const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter((product) => {
-      const matchesCategory = product.category === selectedCategory;
-      
-      // Normalize subcategory comparison (handle both "royal" and "Royal Series" formats)
-      const normalizedProductSub = product.subCategory?.toLowerCase().replace(' series', '');
-      const normalizedSelectedSub = selectedSubCategory.toLowerCase().replace(' series', '');
-      const matchesSubCategory = selectedSubCategory === 'all' || 
-                                  normalizedProductSub === normalizedSelectedSub ||
-                                  product.subCategory === selectedSubCategory;
-      
-      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            product.modelNumber.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSubCategory && matchesSearch;
-    });
-  }, [selectedCategory, selectedSubCategory, searchQuery]);
-
-  const handleCategoryChange = (slug: string) => {
-    setSelectedCategory(slug);
-    setSelectedSubCategory('all');
-    router.push(`/products?category=${slug}`);
-    setIsMobileFilterOpen(false);
+export async function generateMetadata({ searchParams }: { searchParams: SP }): Promise<Metadata> {
+  const { category } = await searchParams;
+  const cat = category ? getCategory(category) : undefined;
+  if (cat) {
+    const c = CATEGORY_COPY[cat.slug];
+    return {
+      title: c.title,
+      description: c.description,
+      alternates: { canonical: `/products?category=${cat.slug}` },
+      openGraph: { title: `${c.title} | SR Industries`, description: c.description, url: `/products?category=${cat.slug}` },
+    };
+  }
+  return {
+    title: 'Gas Stove Parts Catalogue and Price List',
+    description: `All ${PRODUCTS.length} SR Industries gas stove parts with model codes and per-piece prices: knobs, dial plates, stove legs, couplers, burner pins and safety components.`,
+    alternates: { canonical: '/products' },
   };
+}
 
-  const handleSubCategoryChange = (sub: string) => {
-    setSelectedSubCategory(sub);
-    router.push(`/products?category=${selectedCategory}&sub=${sub}`);
-    setIsMobileFilterOpen(false);
+export default async function ProductsPage({ searchParams }: { searchParams: SP }) {
+  const { category, sub } = await searchParams;
+  const cat = category ? getCategory(category) : undefined;
+  const inCat = cat ? PRODUCTS.filter((p) => p.category === cat.id) : PRODUCTS;
+
+  const norm = (s: string) => s.toLowerCase().replace(/ series$/, '').trim();
+  const activeSub = cat && sub && sub !== 'all' ? cat.subCategories?.find((s) => norm(s) === norm(sub)) : undefined;
+  const shown = activeSub ? inCat.filter((p) => p.subCategory && norm(p.subCategory) === norm(activeSub)) : inCat;
+
+  const listLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: cat ? `${cat.name}, SR Industries` : 'SR Industries catalogue',
+    itemListElement: shown.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${SITE_URL}/products/${p.slug}`,
+      name: p.name,
+    })),
+  };
+  const crumbsLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Catalogue', item: `${SITE_URL}/products` },
+      ...(cat ? [{ '@type': 'ListItem', position: 3, name: cat.name, item: `${SITE_URL}/products?category=${cat.slug}` }] : []),
+    ],
   };
 
   return (
-    <div className="pt-24 md:pt-32 pb-24 bg-zinc-50 min-h-screen">
-      <div className="container mx-auto px-4 md:px-6">
-        {/* Header */}
-        <div className="mb-8 md:mb-12">
-          <div className="flex items-center space-x-2 text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">
-            <Link href="/" className="hover:text-zinc-900 transition-colors">Home</Link>
-            <ChevronRight size={12} />
-            <span className="text-zinc-900">Products Catalog</span>
+    <>
+      <JsonLd data={listLd} />
+      <JsonLd data={crumbsLd} />
+      <header className="page-head">
+        <div className="container">
+          <ol className="crumbs">
+            <li><Link href="/">Home</Link></li>
+            <li>{cat ? <Link href="/products">Catalogue</Link> : 'Catalogue'}</li>
+            {cat && <li>{cat.name}</li>}
+          </ol>
+          <div className="page-head-grid">
+            <h1>{cat ? (cat.id === 'knobs' ? 'Gas stove knobs' : `Gas stove ${cat.name.toLowerCase()}`) : 'The catalogue'}</h1>
+            <p className="lead">
+              {cat
+                ? CATEGORY_COPY[cat.slug].description.split('. ')[0] + '.'
+                : `${PRODUCTS.length} parts with model codes and prices per piece. Minimum order 3,000 pieces a model.`}
+            </p>
           </div>
-          <h1 className="text-2xl md:text-5xl font-semibold tracking-tight mb-3 text-zinc-900">
-            {currentCategoryData?.name} <span className="text-zinc-400">Series</span>
-          </h1>
-          <p className="text-sm md:text-base text-zinc-500 max-w-2xl leading-relaxed">
-            Strict adherence to industrial standards for the {currentCategoryData?.name.toLowerCase()} classification (Catalogue 2024–25).
-          </p>
-        </div>
-
-        {/* Mobile Filter Toggle */}
-        <div className="lg:hidden flex gap-3 mb-6">
-          <button
-            onClick={() => setIsMobileFilterOpen(true)}
-            className="flex-grow flex items-center justify-center space-x-2 bg-zinc-900 text-white py-4 min-h-[48px] rounded-2xl font-bold text-sm"
-          >
-            <Filter size={18} />
-            <span>FILTER PRODUCTS</span>
-          </button>
-          <div className="relative w-1/3">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
-            <input
-              type="text"
-              placeholder="Model #"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-4 min-h-[48px] bg-white border border-zinc-200 rounded-2xl text-xs font-bold outline-none"
-            />
+          <div className="btn-row" style={{ marginTop: 24 }}>
+            <a href={PRICE_LIST_PDF} download className="btn btn--secondary">
+              <Download aria-hidden /> Download the price list (PDF)
+            </a>
           </div>
         </div>
+      </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
-          {/* Sidebar Filters (Desktop) */}
-          <div className="hidden lg:block lg:col-span-1 space-y-10">
-            {/* Main Categories */}
-            <div>
-              <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-[0.2em] mb-6 flex items-center">
-                <Filter size={14} className="mr-2" /> Main Categories
-              </h3>
-              <div className="space-y-2">
-                {CATEGORIES.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => handleCategoryChange(cat.slug)}
-                    className={`w-full text-left px-5 py-4 min-h-[48px] rounded-xl text-sm font-bold transition-all flex items-center justify-between group ${
-                      selectedCategory === cat.slug
-                        ? 'bg-zinc-900 text-white shadow-xl shadow-zinc-200'
-                        : 'bg-white text-zinc-600 hover:bg-zinc-100'
-                    }`}
-                  >
-                    <span>{cat.name}</span>
-                    <ChevronRight size={14} className={`${selectedCategory === cat.slug ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-all`} />
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Sub Categories / Series */}
-            {currentCategoryData?.subCategories && (
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                key={selectedCategory}
-              >
-                <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-[0.2em] mb-6">
-                  {selectedCategory === 'knobs' ? 'Series Selection' : 'Types / Models'}
-                </h3>
-                <div className="grid grid-cols-1 gap-2">
-                  <button
-                    onClick={() => handleSubCategoryChange('all')}
-                    className={`text-left px-5 py-3 min-h-[44px] rounded-xl text-xs font-bold transition-all border ${
-                      selectedSubCategory === 'all'
-                        ? 'bg-zinc-100 border-zinc-200 text-zinc-900'
-                        : 'bg-transparent border-transparent text-zinc-500 hover:text-zinc-900'
-                    }`}
-                  >
-                    All {currentCategoryData.name}
-                  </button>
-                  {currentCategoryData.subCategories.map((sub) => (
-                    <button
-                      key={sub}
-                      onClick={() => handleSubCategoryChange(sub)}
-                      className={`text-left px-5 py-3 min-h-[44px] rounded-xl text-xs font-bold transition-all border ${
-                        selectedSubCategory === sub
-                          ? 'bg-zinc-100 border-zinc-200 text-zinc-900'
-                          : 'bg-transparent border-transparent text-zinc-500 hover:text-zinc-900'
-                      }`}
-                    >
-                      {sub}
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {/* Search (Desktop) */}
-            <div>
-              <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-[0.2em] mb-6">Quick Search</h3>
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
-                <input
-                  type="text"
-                  placeholder="Search by model #..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 bg-white border border-zinc-100 rounded-xl text-xs font-medium focus:ring-2 focus:ring-zinc-900 transition-all outline-none shadow-sm"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Main Content */}
-          <div className="lg:col-span-3">
-            {/* Active Filters Display */}
-            <div className="flex flex-wrap items-center gap-2 mb-6 md:mb-8">
-              <span className="text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-widest mr-2">Showing:</span>
-              <div className="px-3 py-1 bg-zinc-200 rounded-lg text-[8px] md:text-[10px] font-bold text-zinc-700 uppercase">
-                {selectedCategory.replace('-', ' ')}
-              </div>
-              {selectedSubCategory !== 'all' && (
-                <div className="px-3 py-1 bg-red-100 rounded-lg text-[8px] md:text-[10px] font-bold text-red-700 uppercase">
-                  {selectedSubCategory}
-                </div>
-              )}
-              <span className="ml-auto text-[10px] md:text-xs font-bold text-zinc-400">
-                {filteredProducts.length} Results
-              </span>
-            </div>
-
-            <AnimatePresence mode="wait">
-              {filteredProducts.length > 0 ? (
-                <motion.div 
-                  key={selectedCategory + selectedSubCategory + searchQuery}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3 }}
-                  className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6"
+      <div className="filters">
+        <div className="container">
+          <nav className="cat-tabs" aria-label="Categories">
+            <Link href="/products" aria-current={!cat ? 'true' : undefined}>
+              All <span className="count">{PRODUCTS.length}</span>
+            </Link>
+            {CATEGORIES.map((c) => (
+              <Link key={c.id} href={`/products?category=${c.slug}`} aria-current={cat?.id === c.id ? 'true' : undefined} scroll={false}>
+                {c.name} <span className="count">{PRODUCTS.filter((p) => p.category === c.id).length}</span>
+              </Link>
+            ))}
+          </nav>
+          {cat?.subCategories && (
+            <nav className="chips" aria-label={`${cat.name} types`}>
+              <Link className="chip" href={`/products?category=${cat.slug}`} aria-pressed={!activeSub} scroll={false} style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
+                All {cat.name.toLowerCase()}
+              </Link>
+              {cat.subCategories.map((s) => (
+                <Link
+                  key={s}
+                  className="chip"
+                  href={`/products?category=${cat.slug}&sub=${encodeURIComponent(s.toLowerCase())}`}
+                  aria-pressed={activeSub === s}
+                  scroll={false}
+                  style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}
                 >
-                  {filteredProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </motion.div>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="py-24 md:py-32 text-center bg-white rounded-[2rem] border border-dashed border-zinc-200 mx-auto"
-                >
-                  <div className="w-12 h-12 md:w-16 md:h-16 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Search className="text-zinc-200" size={24} />
-                  </div>
-                  <h3 className="text-base md:text-lg font-semibold text-zinc-900 mb-2">No components found</h3>
-                  <p className="text-zinc-500 max-w-[240px] md:max-w-xs mx-auto text-xs md:text-sm">
-                    Try adjusting your series selection or search by model number.
-                  </p>
-                  <button 
-                    onClick={() => { setSearchQuery(''); setSelectedSubCategory('all'); }}
-                    className="mt-8 text-[10px] md:text-xs font-bold text-zinc-900 border-b-2 border-zinc-900 hover:text-zinc-600 hover:border-zinc-600 transition-all uppercase tracking-widest"
-                  >
-                    RESET FILTERS
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+                  {s}
+                </Link>
+              ))}
+            </nav>
+          )}
         </div>
       </div>
 
-      {/* Mobile Filter Bottom Sheet */}
-      <AnimatePresence>
-        {isMobileFilterOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60]"
-              onClick={() => setIsMobileFilterOpen(false)}
-            />
-            <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed bottom-0 left-0 right-0 bg-white z-[70] rounded-t-[2.5rem] max-h-[90vh] overflow-y-auto"
-            >
-              <div className="p-8">
-                <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-xl font-semibold">Catalog Filters</h2>
-                  <button 
-                    onClick={() => setIsMobileFilterOpen(false)}
-                    className="w-10 h-10 bg-zinc-100 rounded-full flex items-center justify-center"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
-
-                <div className="space-y-10">
-                  {/* Categories */}
-                  <div>
-                    <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-4">Product Category</h3>
-                    <div className="grid grid-cols-1 gap-2">
-                      {CATEGORIES.map((cat) => (
-                        <button
-                          key={cat.id}
-                          onClick={() => handleCategoryChange(cat.slug)}
-                          className={`w-full text-left px-5 py-4 min-h-[48px] rounded-2xl text-sm font-bold transition-all ${
-                            selectedCategory === cat.slug
-                              ? 'bg-zinc-900 text-white shadow-xl shadow-zinc-200'
-                              : 'bg-zinc-50 text-zinc-600'
-                          }`}
-                        >
-                          {cat.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Subcategories */}
-                  {currentCategoryData?.subCategories && (
-                    <div>
-                      <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-4">Series / Models</h3>
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          onClick={() => handleSubCategoryChange('all')}
-                          className={`text-center px-4 py-3 min-h-[44px] rounded-xl text-xs font-bold transition-all border ${
-                            selectedSubCategory === 'all'
-                              ? 'bg-zinc-100 border-zinc-200 text-zinc-900'
-                              : 'bg-zinc-50 border-transparent text-zinc-500'
-                          }`}
-                        >
-                          All Models
-                        </button>
-                        {currentCategoryData.subCategories.map((sub) => (
-                          <button
-                            key={sub}
-                            onClick={() => handleSubCategoryChange(sub)}
-                            className={`text-center px-4 py-3 min-h-[44px] rounded-xl text-xs font-bold transition-all border ${
-                              selectedSubCategory === sub
-                                ? 'bg-zinc-100 border-zinc-200 text-zinc-900'
-                                : 'bg-zinc-50 border-transparent text-zinc-500'
-                            }`}
-                          >
-                            {sub}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <button
-                  onClick={() => setIsMobileFilterOpen(false)}
-                  className="w-full bg-zinc-900 text-white py-5 min-h-[56px] rounded-2xl font-bold mt-12 mb-4"
-                >
-                  SHOW {filteredProducts.length} RESULTS
-                </button>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-export default function ProductsPage() {
-  return (
-    <Suspense fallback={<div className="pt-40 text-center font-bold tracking-widest text-zinc-400">LOADING CATALOGUE...</div>}>
-      <ProductsContent />
-    </Suspense>
+      <section className="section--tight" style={{ paddingTop: 0 }}>
+        <div className="container">
+          <CatalogueGrid products={shown} />
+        </div>
+      </section>
+    </>
   );
 }
