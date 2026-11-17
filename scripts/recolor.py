@@ -14,14 +14,13 @@ R = 'scripts/replacements'
 # metal and keep a dark inlay as it is)
 JOBS = [
     ('Hob-Series', 'HobSeries-Grey', ['HobSeries-Golden', 'HobSeries-Natural', 'HobSeries-Copper'], False),
-    ('Sleek-Series', 'Sleekseries-Black', ['Sleekseries-Copper', 'Sleekseries-Pink'], False),
     ('Metal-Series', 'MetalSeries-Model-2-Copper', ['MetalSeries-Model-2-Golden', 'MetalSeries-Model-2-Black'], True),
 ]
 
 def chroma(lab):
     return np.hypot(lab[..., 1] - 128, lab[..., 2] - 128)
-# finishes that look the same as the stand-in (Painted is black too)
-SAME = [('Sleek-Series', 'Sleekseries-Black', 'Sleekseries-Painted')]
+# finishes that look the same as their stand-in: (folder, stand-in, finish)
+SAME = []
 
 def part_mask(img):
     fg = img.min(axis=2) < 228
