@@ -14,6 +14,7 @@ R = 'scripts/replacements'
 # metal and keep a dark inlay as it is)
 JOBS = [
     ('Hob-Series', 'HobSeries-Grey', ['HobSeries-Golden', 'HobSeries-Natural', 'HobSeries-Copper'], False),
+    ('Sleek-Series', 'Sleekseries-Black', ['Sleekseries-Copper', 'Sleekseries-Pink'], False),
     ('Metal-Series', 'MetalSeries-Model-2-Copper', ['MetalSeries-Model-2-Golden', 'MetalSeries-Model-2-Black'], True),
 ]
 
@@ -86,6 +87,49 @@ def recolor(folder, base, finishes, body_only):
         print('wrote', name)
 
 
+def sleek():
+    """Sleek Series from one photo of the painted knob (scripts/sources/sleek-oval.png):
+    Painted as shot, Black with the white paint mark removed, Sticker with a white
+    top inside the black rim and a black slot line, as on SR's sticker knob."""
+    im = cv2.imread('scripts/sources/sleek-oval.png')
+    g = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    S = ndimage.binary_fill_holes(ndimage.binary_opening(g < 215, iterations=1))
+    d = f'{R}/Sleek-Series'
+    cv2.imwrite(f'{d}/Sleekseries-Painted.png', im)
+    # the paint mark: the largest bright blob well inside the part
+    inner = ndimage.binary_erosion(S, iterations=8)
+    lab, n = ndimage.label((g > 150) & inner)
+    sizes = ndimage.sum(np.ones_like(g), lab, range(1, n + 1))
+    mark = lab == (int(np.argmax(sizes)) + 1)
+    black = cv2.inpaint(im, ndimage.binary_dilation(mark, iterations=3).astype(np.uint8) * 255, 5, cv2.INPAINT_TELEA)
+    cv2.imwrite(f'{d}/Sleekseries-Black.png', black)
+    # top face: points that stay inside the silhouette when pushed down by the side height
+    D = 64
+    T = np.ones_like(S)
+    for k in range(D + 1):
+        T &= np.roll(S, -k, 0)
+    face = ndimage.binary_erosion(T, iterations=5)  # leave a black rim
+    a = cv2.GaussianBlur(face.astype(np.float32), (0, 0), 0.8)[..., None]
+    shade = (cv2.GaussianBlur(g.astype(np.float32), (0, 0), 6) / 255.0)[..., None]
+    white = np.clip(238 + shade * 40, 0, 250)
+    sticker = black.astype(np.float32) * (1 - a) + white * a
+    # black slot line from the mark's position out to the rim, along the mark's long axis
+    ys, xs = np.nonzero(mark)
+    cy, cx = ys.mean(), xs.mean()
+    cov = np.cov(np.vstack([xs - cx, ys - cy]))
+    vx, vy = np.linalg.eigh(cov)[1][:, -1]
+    if vx < 0: vx, vy = -vx, -vy
+    p0 = (int(cx - vx * 9), int(cy - vy * 9))
+    p1 = (int(cx + vx * 40), int(cy + vy * 40))
+    line = np.zeros(g.shape, np.uint8)
+    cv2.line(line, p0, p1, 255, 6, cv2.LINE_AA)
+    la = (line.astype(np.float32) / 255 * (ndimage.binary_dilation(face, iterations=3)))[..., None]
+    sticker = sticker * (1 - la) + 18 * la
+    cv2.imwrite(f'{d}/Sleekseries-Sticker.png', sticker.clip(0, 255).astype(np.uint8))
+    print('wrote Sleek Painted, Black, Sticker')
+
+
+sleek()
 for job in JOBS:
     recolor(*job)
 for folder, base, name in SAME:
