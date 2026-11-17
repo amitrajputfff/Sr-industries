@@ -46,7 +46,7 @@ export const BRAND_ASSETS = {
 export const CONTACT_DATA = {
   phone: "+91 9873741552",
   whatsapp: "919873741552",
-  email: "info@srindustries.co.in",
+  email: "info@srindustries.info",
   address: "Plot No. 9, Gali No. 11, Saroorpur Industrial Area, Ballabhgarh, Faridabad, Haryana – 121004, India",
 };
 

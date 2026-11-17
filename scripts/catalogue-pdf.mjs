@@ -20,7 +20,7 @@ await page.evaluate(() =>
 await new Promise((r) => setTimeout(r, 500));
 
 const foot = `<div style="width:100%;padding:0 15mm;font:8.5px/1 -apple-system,Helvetica,Arial,sans-serif;color:#77736d;display:flex;justify-content:space-between">
-  <span>SR Industries, Faridabad &nbsp; +91 9873741552 &nbsp; info@srindustries.co.in</span>
+  <span>SR Industries, Faridabad &nbsp; +91 9873741552 &nbsp; info@srindustries.info</span>
   <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span></div>`;
 
 await page.pdf({

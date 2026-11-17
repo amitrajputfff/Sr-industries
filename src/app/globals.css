@@ -424,7 +424,19 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .fig-shadow { fill: color-mix(in oklab, var(--ink) 7%, transparent); stroke: none; }
 .fig-tiny { font-family: var(--font-mono); font-size: 9px; fill: var(--muted); letter-spacing: 0.04em; }
 .fig-dot { fill: var(--accent); stroke: none; }
-.fig-flame path { fill: var(--flame-soft); stroke: var(--flame); stroke-width: 1.2; }
+.fig-flame path { fill: var(--flame-soft); stroke: var(--flame); stroke-width: 1; }
+.fig-flame path.fig-core { fill: var(--flame); stroke: none; opacity: 0.55; }
+.fig-flame g { transform-box: fill-box; transform-origin: 50% 100%; animation: fig-flicker 1.4s ease-in-out infinite alternate; }
+@keyframes fig-flicker { from { scale: 1 0.92; } to { scale: 1 1.05; } }
+.fig-glow { fill: url(#fig-heat); stroke: none; }
+.fig-glass { fill: url(#fig-glass); stroke: var(--ink); stroke-width: 1.4; stroke-linejoin: round; }
+.fig-edge { fill: var(--ink); stroke: none; }
+.fig-iron { fill: none; stroke: var(--ink); stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+.fig-port line { stroke: var(--ink-2); stroke-width: 1; }
+.fig-cap { fill: var(--ink); stroke: none; }
+.fig-cap-hi { fill: var(--surface); opacity: 0.35; stroke: none; }
+.fig-brush line { stroke: var(--line); stroke-width: 1; stroke-dasharray: 220 14 90 30; }
+@media (prefers-reduced-motion: reduce) { .fig-flame g { animation: none; } }
 .fig-part { transition: stroke var(--dur-short) var(--ease-out), fill var(--dur-short) var(--ease-out); }
 .is-hi .fig-part { stroke: var(--accent); fill: var(--accent-soft); }
 .fig-marker line { stroke: var(--line-2); stroke-width: 1; stroke-dasharray: 3 4; }

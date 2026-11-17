@@ -40,40 +40,77 @@ def remove_cursor(img, fg):
     mask = cv2.dilate(mask, np.ones((3, 3), np.uint8), iterations=2)
     return cv2.inpaint(img.astype(np.uint8), mask, 6, cv2.INPAINT_TELEA).astype(np.float32), int(resp[y, x])
 
+
+def clean_surface(img8, fg):
+    """Studio clean-up: paint out dust, specks and fine scratches, then smooth
+    flat plastic and metal while keeping real edges (outlines, slots, print)."""
+    g = cv2.cvtColor(img8, cv2.COLOR_BGR2GRAY).astype(np.int16)
+    ph = max(1, int(fg.sum() ** 0.5))
+    k = max(7, (ph // 18) | 1)
+    med = cv2.medianBlur(img8, k)
+    gm = cv2.cvtColor(med, cv2.COLOR_BGR2GRAY).astype(np.int16)
+    diff = np.abs(g - gm)
+    # specks: small spots that differ from their neighbourhood; white print (> 200) is kept
+    cand = ((diff > 12) & fg & (g < 200)).astype(np.uint8)
+    n, lab, stats, _ = cv2.connectedComponentsWithStats(cand, 8)
+    small = np.zeros_like(cand)
+    lim = max(30, int(fg.sum() * 0.0025))
+    for i in range(1, n):
+        if stats[i, cv2.CC_STAT_AREA] <= lim:
+            small[lab == i] = 1
+    small = cv2.dilate(small, np.ones((3, 3), np.uint8), iterations=1)
+    out = cv2.inpaint(img8, small * 255, 4, cv2.INPAINT_TELEA)
+    # edge-preserving smoothing of the surfaces
+    sm = out
+    for _ in range(2):
+        sm = cv2.bilateralFilter(sm, 9, 28, 7)
+    # keep real structure: strong edges of the median image stay from the unsmoothed photo
+    e = cv2.Canny(cv2.GaussianBlur(med, (0, 0), 1.2), 40, 110)
+    e = cv2.GaussianBlur(cv2.dilate(e, np.ones((3, 3), np.uint8)).astype(np.float32) / 255, (0, 0), 1.5)
+    e = np.clip(e * 1.6, 0, 1)[..., None]
+    return (sm * (1 - e) + out * e).clip(0, 255).astype(np.uint8), e[..., 0]
+
 SIZE = 760  # sized near the source photos (about 450px parts) so they are barely upscaled
 
-def retouch(img, a, fg):
+def retouch(img, a, fg, clean=True):
     """Phone photo to catalogue shot: denoise, levels, local contrast, colour,
     then the part centred on a white square with a soft studio shadow."""
     img8 = img.clip(0, 255).astype(np.uint8)
-    img8 = cv2.fastNlMeansDenoisingColored(img8, None, 3, 3, 7, 21)
-    lab = cv2.cvtColor(img8, cv2.COLOR_BGR2LAB).astype(np.float32)
-    L = lab[..., 0]
-    vals = L[fg]
-    lo, hi = np.percentile(vals, 0.8), np.percentile(vals, 99.6)
-    stretched = (L - lo) / max(hi - lo, 1) * (242 - 8) + 8
-    L = L * 0.4 + stretched * 0.6
-    L8 = L.clip(0, 255).astype(np.uint8)
-    L8 = cv2.createCLAHE(clipLimit=1.2, tileGridSize=(4, 4)).apply(L8)
-    lab[..., 0] = L8
-    lab[..., 1:] = (lab[..., 1:] - 128) * 1.1 + 128
-    img8 = cv2.cvtColor(lab.clip(0, 255).astype(np.uint8), cv2.COLOR_LAB2BGR).astype(np.float32)
-
+    if clean:
+        img8 = cv2.fastNlMeansDenoisingColored(img8, None, 3, 3, 7, 21)
+        img8, edges = clean_surface(img8, fg)
+    else:
+        edges = np.zeros(fg.shape, np.float32)
+    if clean:  # supplied studio photos are already graded
+        lab = cv2.cvtColor(img8, cv2.COLOR_BGR2LAB).astype(np.float32)
+        L = lab[..., 0]
+        vals = L[fg]
+        lo, hi = np.percentile(vals, 0.8), np.percentile(vals, 99.6)
+        stretched = (L - lo) / max(hi - lo, 1) * (242 - 8) + 8
+        L = L * 0.4 + stretched * 0.6
+        L8 = L.clip(0, 255).astype(np.uint8)
+        L8 = cv2.createCLAHE(clipLimit=1.2, tileGridSize=(4, 4)).apply(L8)
+        lab[..., 0] = L8
+        lab[..., 1:] = (lab[..., 1:] - 128) * 1.1 + 128
+        img8 = cv2.cvtColor(lab.clip(0, 255).astype(np.uint8), cv2.COLOR_LAB2BGR).astype(np.float32)
+    img8 = img8.astype(np.float32)
     ys, xs = np.where(a > 0.03)
     y0, y1, x0, x1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
     part = img8[y0:y1, x0:x1]
     pa = a[y0:y1, x0:x1]
     ph, pw = pa.shape
-    # sharpen once at source resolution, where the real detail is
-    part = cv2.addWeighted(part, 1.6, cv2.GaussianBlur(part, (0, 0), 0.8), -0.6, 0)
+    # sharpen once at source resolution, only along real edges so surfaces stay clean
+    pe = edges[y0:y1, x0:x1][..., None]
+    part = part + (part - cv2.GaussianBlur(part, (0, 0), 0.8)) * 0.8 * pe
     # scale the part to fill 64% of the square on its long side, Lanczos
     sc = SIZE * 0.64 / max(ph, pw)
     nw, nh = max(1, round(pw * sc)), max(1, round(ph * sc))
     part = cv2.resize(part, (nw, nh), interpolation=cv2.INTER_LANCZOS4)
     pa = cv2.resize(pa, (nw, nh), interpolation=cv2.INTER_LINEAR).clip(0, 1)
     # two-radius unsharp mask: fine edges, then a little mid-tone clarity
-    part = cv2.addWeighted(part, 1.5, cv2.GaussianBlur(part, (0, 0), 1.0), -0.5, 0)
-    part = cv2.addWeighted(part, 1.3, cv2.GaussianBlur(part, (0, 0), 3.0), -0.3, 0)
+    pe = cv2.resize(pe, (nw, nh), interpolation=cv2.INTER_LINEAR)[..., None]
+    part = part + (part - cv2.GaussianBlur(part, (0, 0), 1.0)) * 0.45 * pe
+    part = cv2.addWeighted(part, 1.18, cv2.GaussianBlur(part, (0, 0), 4.0), -0.18, 0)
 
     canvas = np.full((SIZE, SIZE, 3), 255, np.float32)
     ox, oy = (SIZE - nw) // 2, int((SIZE - nh) * 0.44)
@@ -102,7 +139,10 @@ for f in sorted(glob.glob('public/*/*.png')):
         os.makedirs(f'public/parts/thumbs/{folder}', exist_ok=True)
         cv2.imwrite(f'public/parts/thumbs/{folder}/{name}.jpg', cv2.resize(sq, (300, 300), interpolation=cv2.INTER_AREA), [cv2.IMWRITE_JPEG_QUALITY, 84])
         continue
-    img = cv2.imread(f, cv2.IMREAD_COLOR).astype(np.float32)
+    # a cleaner stand-in photo of a very similar part, when one was supplied
+    rep = f.replace('public/', 'scripts/replacements/', 1)
+    is_rep = os.path.exists(rep)
+    img = cv2.imread(rep if is_rep else f, cv2.IMREAD_COLOR).astype(np.float32)
     h, w = img.shape[:2]
     mn = img.min(axis=2)
     sat = img.max(axis=2) - mn
@@ -136,10 +176,10 @@ for f in sorted(glob.glob('public/*/*.png')):
         img = cv2.inpaint(img.clip(0, 255).astype(np.uint8), cv2.dilate(gap, np.ones((3, 3), np.uint8)), 9, cv2.INPAINT_TELEA).astype(np.float32)
         fg = hull.astype(bool)
     fixed = 0
-    if any(s in f for s in CURSOR):
+    if not is_rep and any(s in f for s in CURSOR):
         img, fixed = remove_cursor(img, fg)
     a = cv2.GaussianBlur(fg.astype(np.float32), (3, 3), 0)
-    out = retouch(img, a, fg)
+    out = retouch(img, a, fg, clean=not is_rep)
     folder, name = f.split('/')[-2], os.path.splitext(f.split('/')[-1])[0]
     os.makedirs(f'public/parts/{folder}', exist_ok=True)
     cv2.imwrite(f'public/parts/{folder}/{name}.webp', out, [cv2.IMWRITE_WEBP_QUALITY, 86])
