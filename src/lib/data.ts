@@ -247,14 +247,14 @@ export const PRODUCTS: Product[] = [
         price: 9.00,
       },
       {
-        color: '#FFC0CB',
+        color: '#C98B3E',
         name: 'Pink',
         image: '/Sleek-Series/Sleekseries-Pink.png',
         modelNumber: 'SL-PK',
         price: 6.00,
       },
       {
-        color: '#F5F5F5',
+        color: '#1C1C1C',
         name: 'Painted',
         image: '/Sleek-Series/Sleekseries-Painted.png',
         modelNumber: 'SL-PT',
@@ -422,7 +422,7 @@ export const PRODUCTS: Product[] = [
         price: 40.00,
       },
       {
-        color: '#FFD700',
+        color: '#B87333',
         name: 'Copper',
         image: '/Metal-Series/MetalSeries-Model-1-Copper.png',
         modelNumber: 'MEBR-CP',
