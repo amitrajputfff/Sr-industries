@@ -12,6 +12,7 @@ import esrgan
 from scipy import ndimage
 
 SKIP = ('Royal-series', 'Euro-series')
+AS_IS = ('DialPlate-Series',)  # supplied photos shown exactly as given
 HOLED = ('DialPlate-Series', 'NozzleRing', 'Coupler')
 # photos with a captured mouse pointer
 CURSOR = ('HobSeries-Golden', 'HobSeries-Grey', 'HobSeries-Natural', 'MetalSeries-', 'Sleekseries-Copper',
@@ -151,6 +152,34 @@ for f in sorted(glob.glob('public/*/*.png')):
     # a cleaner stand-in photo of a very similar part, when one was supplied
     rep = f.replace('public/', 'scripts/replacements/', 1)
     is_rep = os.path.exists(rep)
+    folder, name = f.split('/')[-2], os.path.splitext(f.split('/')[-1])[0]
+    if is_rep and folder in AS_IS:
+        # supplied studio shots used as they are: no upscale, sharpening or shadow,
+        # only centred on the same white square as every other part
+        im = cv2.imread(rep)
+        h, w = im.shape[:2]
+        side = int(max(h, w) / 0.64)
+        sq = np.full((side, side, 3), 255, np.uint8)
+        y, x = int((side - h) * 0.44), (side - w) // 2
+        sq[y:y + h, x:x + w] = im
+        out = cv2.resize(sq, (SIZE, SIZE), interpolation=cv2.INTER_AREA).astype(np.float32)
+        # the same soft floor shadow as the other parts, drawn only on the white around it
+        pa = ndimage.binary_fill_holes(ndimage.binary_closing(out.min(axis=2) < 232, iterations=3))
+        ys, xs = np.nonzero(pa)
+        oy, nh, nw = ys.min(), ys.max() - ys.min() + 1, xs.max() - xs.min() + 1
+        cy = oy + nh
+        sh = np.zeros((SIZE, SIZE), np.float32)
+        cv2.ellipse(sh, (int(xs.mean()), cy), (int(nw * 0.42), max(6, int(nh * 0.045))), 0, 0, 360, 1, -1)
+        sh = cv2.GaussianBlur(sh, (0, 0), max(6, nw * 0.035)) * 0.32
+        sil = cv2.warpAffine(pa.astype(np.float32), np.float32([[1, 0, 0], [0, 0.12, cy * 0.88 + 6]]), (SIZE, SIZE))
+        sh = np.maximum(sh, cv2.GaussianBlur(sil, (0, 0), 10) * 0.28)
+        a = cv2.GaussianBlur(pa.astype(np.float32), (3, 3), 0)[..., None]
+        out = (out * a + out * (1 - sh)[..., None] * (1 - a)).clip(0, 255).astype(np.uint8)
+        os.makedirs(f'public/parts/{folder}', exist_ok=True)
+        cv2.imwrite(f'public/parts/{folder}/{name}.webp', out, [cv2.IMWRITE_WEBP_QUALITY, 90])
+        os.makedirs(f'public/parts/thumbs/{folder}', exist_ok=True)
+        cv2.imwrite(f'public/parts/thumbs/{folder}/{name}.jpg', cv2.resize(out, (300, 300), interpolation=cv2.INTER_AREA), [cv2.IMWRITE_JPEG_QUALITY, 84])
+        continue
     img = cv2.imread(rep if is_rep else f, cv2.IMREAD_COLOR).astype(np.float32)
     h, w = img.shape[:2]
     mn = img.min(axis=2)

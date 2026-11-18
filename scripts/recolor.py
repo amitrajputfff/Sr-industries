@@ -88,7 +88,8 @@ def recolor(folder, base, finishes, body_only):
         if folder == 'Sleek-Series':
             # the tone map flattens small dark detail; add the slot's local contrast back
             sL = cv2.cvtColor(src, cv2.COLOR_BGR2LAB)[..., 0].astype(np.float32)
-            out[..., 0] += 1.6 * (sL - cv2.GaussianBlur(sL, (0, 0), 6))
+            pocket = cv2.GaussianBlur((sL < 8).astype(np.float32) * part, (0, 0), 0.8)
+            out[..., 0] = out[..., 0] * (1 - 0.55 * pocket)
         if body_only == 'red':
             # SR's photos are soft and dull; push the hue a little so gold reads as gold
             out[..., 1:] = 128 + (out[..., 1:] - 128) * 1.35
@@ -122,19 +123,16 @@ def sleek():
     sizes = ndimage.sum(np.ones_like(g), lab, range(1, n + 1))
     mark = lab == (int(np.argmax(sizes)) + 1)
     black = cv2.inpaint(im, ndimage.binary_dilation(mark, iterations=3).astype(np.uint8) * 255, 5, cv2.INPAINT_TELEA)
-    # unpainted, the mark is a rectangular pocket sunk into the top. Seen from the
-    # front and above: the far (upper) inner wall shows as a grey band, the floor
-    # is in shadow, the near wall is hidden, and the near rim catches a thin highlight
+    # unpainted, the mark is a rectangular pocket sunk into the top: the whole
+    # rectangle is a darker floor, the top rim casts a deeper shadow into it, and
+    # only the lower inner wall catches a little light
     slot = ndimage.binary_dilation(mark, iterations=1)
     bf = black.astype(np.float32)
-    floor = cv2.GaussianBlur(slot.astype(np.float32), (0, 0), 0.7)[..., None]
-    bf = bf * (1 - floor) + 6 * floor
-    wall = slot & ~np.roll(slot, 4, 0)                        # upper rows inside the pocket
-    rim = np.roll(slot, 1, 0) & ~slot                         # just below the near edge, outside
-    wa = cv2.GaussianBlur(wall.astype(np.float32), (0, 0), 0.9)[..., None]
-    ra = cv2.GaussianBlur(rim.astype(np.float32), (0, 0), 0.6)[..., None]
-    bf = bf * (1 - wa * 0.85) + 52 * wa * 0.85
-    bf = bf * (1 - ra * 0.7) + 95 * ra * 0.7
+    floor = cv2.GaussianBlur(slot.astype(np.float32), (0, 0), 0.6)[..., None]
+    bf = bf * (1 - floor) + 3 * floor
+    lip = slot & ~np.roll(slot, -2, 0)                        # lowest rows inside
+    la = cv2.GaussianBlur(lip.astype(np.float32), (0, 0), 0.6)[..., None]
+    bf = bf * (1 - la * 0.6) + 34 * la * 0.6
     black = bf.clip(0, 255).astype(np.uint8)
     cv2.imwrite(f'{d}/Sleekseries-Black.png', black)
     # top face: points that stay inside the silhouette when pushed down by the side height
