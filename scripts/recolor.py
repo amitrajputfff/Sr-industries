@@ -99,11 +99,19 @@ def recolor(folder, base, finishes, body_only):
             sL = cv2.cvtColor(src, cv2.COLOR_BGR2LAB)[..., 0].astype(np.float32)
             out[..., 0] = sL * 0.65 + out[..., 0] * 0.35
         rgb = cv2.cvtColor(out.clip(0, 255).astype(np.uint8), cv2.COLOR_LAB2BGR)
-        a = cv2.GaussianBlur(mask.astype(np.float32), (3, 3), 0)[..., None]
-        keep = src if body_only else np.full_like(src, 255)
-        res = rgb * a + keep * (1 - a)
+        # soft outline: the photo's own anti-aliased edge (how far each pixel is from
+        # the white backdrop), so the recolour has no stair-stepped cut-out edge
+        outline = np.clip((250 - src.min(axis=2).astype(np.float32)) / 90, 0, 1)
+        outline *= ndimage.binary_dilation(part, iterations=2)
         if body_only:
-            res[~part] = 255
+            a = cv2.GaussianBlur(mask.astype(np.float32), (0, 0), 0.8)[..., None]
+            res = rgb * a + src * (1 - a)
+            # outside the part, fade to white along the photo's own edge
+            edge = np.maximum(outline, cv2.GaussianBlur(part.astype(np.float32), (0, 0), 0.8))[..., None]
+            res = res * edge + 255 * (1 - edge)
+        else:
+            a = np.maximum(cv2.GaussianBlur(mask.astype(np.float32), (0, 0), 1.0), outline)[..., None]
+            res = rgb * a + 255 * (1 - a)
         cv2.imwrite(f'{R}/{folder}/{name}.png', res.clip(0, 255).astype(np.uint8))
         print('wrote', name)
 
