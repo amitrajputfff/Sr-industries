@@ -298,7 +298,7 @@ export const PRODUCTS: Product[] = [
         name: 'White Top / Gold Ring',
         image: '/Euro-series/WhiteTop-Gold.png',
         modelNumber: 'EU-WGL',
-        price: 8.50,
+        price: 15.00,
       },
       {
         color: '#B0B0B0',
@@ -312,14 +312,14 @@ export const PRODUCTS: Product[] = [
         name: 'Black Top / Gold Ring',
         image: '/Euro-series/BlackTop-Gold.png',
         modelNumber: 'EU-BGL',
-        price: 8.50,
+        price: 15.00,
       },
       {
         color: '#4F4F4F',
         name: 'Black Top / Grey Ring',
         image: '/Euro-series/BlackTop-Gray.png',
         modelNumber: 'EU-BBL-BGL',
-        price: 8.50,
+        price: 15.00,
       },
       {
         color: '#C0C0C0',
