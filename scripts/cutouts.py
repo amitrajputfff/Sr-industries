@@ -12,8 +12,9 @@ import esrgan
 from scipy import ndimage
 
 SKIP = ('Royal-series', 'Euro-series')
-AS_IS = ('DialPlate-Series',)  # supplied photos shown exactly as given
-OWN_SHADOW = ('Round', 'RoundS', 'Engraving')  # dial plate photos that already have a floor shadow
+AS_IS = ('DialPlate-Series', 'AutoSeries')  # supplied photos shown exactly as given, never upscaled
+PLAIN = ('AutoSeries',)  # folders whose supplied photos already carry their own shadow
+OWN_SHADOW = ('Round', 'RoundS', 'Engraving', 'LS15', 'LS25', 'LS20', 'LS40', 'lsrd20', 'CPB', 'BurnerPin', 'NozzleRing')  # supplied photos that get no added shadow: they have their own, or (the pin) stand upright
 HOLED = ('DialPlate-Series', 'NozzleRing', 'Coupler')
 # photos with a captured mouse pointer
 CURSOR = ('HobSeries-Golden', 'HobSeries-Grey', 'HobSeries-Natural', 'MetalSeries-', 'Sleekseries-Copper',
@@ -185,7 +186,7 @@ for f in sorted(glob.glob('public/*/*.png')):
     is_rep = os.path.exists(rep)
     folder, name = f.split('/')[-2], os.path.splitext(f.split('/')[-1])[0]
     if is_rep:
-        out = place_supplied(cv2.imread(rep), shadow=name.split('-')[-1] not in OWN_SHADOW,
+        out = place_supplied(cv2.imread(rep), shadow=name.split('-')[-1] not in OWN_SHADOW and folder not in PLAIN,
                              upscale=folder not in AS_IS)
         os.makedirs(f'public/parts/{folder}', exist_ok=True)
         cv2.imwrite(f'public/parts/{folder}/{name}.webp', out, [cv2.IMWRITE_WEBP_QUALITY, 90])
