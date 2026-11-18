@@ -16,6 +16,8 @@ JOBS = [
     ('Hob-Series', 'HobSeries-Grey', ['HobSeries-Golden', 'HobSeries-Natural', 'HobSeries-Copper'], False),
     ('Sleek-Series', 'Sleekseries-Black', ['Sleekseries-Copper', 'Sleekseries-Pink'], False),
     ('Metal-Series', 'MetalSeries-Model-2-Copper', ['MetalSeries-Model-2-Golden', 'MetalSeries-Model-2-Black'], True),
+    # 'red': recolour everything but the red bar, which every V-Guard finish shares
+    ('VGuard-Series', 'V-GuardSeries-Black', ['V-GuardSeries-Golden', 'V-GuardSeries-Silver'], 'red'),
 ]
 
 def chroma(lab):
@@ -32,12 +34,17 @@ def part_mask(img):
         fg = lab == (int(np.argmax(sizes)) + 1)
     return ndimage.binary_fill_holes(fg)
 
+def red(lab):
+    return (lab[..., 1] > 150) & (lab[..., 1] > lab[..., 2] - 10)
+
 def tones(path, body_only=False):
     """Five LAB colours along the lightness range of the real part."""
     img = cv2.imread(path)
     m = part_mask(img)
     lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB).astype(np.float32)[m]
-    if body_only:
+    if body_only == 'red':
+        lab = lab[~red(lab)]
+    elif body_only:
         # sample the coloured metal, not the dark inlay, unless the finish itself is neutral
         col = lab[chroma(lab) > 14]
         if len(col) > len(lab) * 0.2:
@@ -54,7 +61,11 @@ def recolor(folder, base, finishes, body_only):
     src = cv2.imread(f'{R}/{folder}/{base}.png')
     part = ndimage.binary_erosion(part_mask(src), iterations=1)  # drop the pale rim pixels
     mask = part
-    if body_only:
+    if body_only == 'red':
+        slab = cv2.cvtColor(src, cv2.COLOR_BGR2LAB).astype(np.float32)
+        bar = ndimage.binary_fill_holes(ndimage.binary_opening(red(slab), iterations=2))
+        mask = part & ~ndimage.binary_dilation(bar, iterations=1)
+    elif body_only:
         slab = cv2.cvtColor(src, cv2.COLOR_BGR2LAB).astype(np.float32)
         mask = part & ((chroma(slab) > 12) | (slab[..., 0] > 200))
         mask = ndimage.binary_closing(mask, iterations=2) & part
@@ -65,7 +76,8 @@ def recolor(folder, base, finishes, body_only):
     vals = np.sort(L[mask])
     rank = np.searchsorted(vals, L) / len(vals)
     lin = np.clip((L - vals[int(len(vals) * 0.01)]) / max(vals[int(len(vals) * 0.995)] - vals[int(len(vals) * 0.01)], 1), 0, 1)
-    t = 0.5 * rank + 0.5 * lin
+    # a black stand-in is mostly dark: take the full tone spread from rank alone
+    t = rank if body_only == 'red' else 0.5 * rank + 0.5 * lin
     stops = np.array([0.0, 0.25, 0.5, 0.75, 1.0])
 
     for name in finishes:
@@ -73,7 +85,15 @@ def recolor(folder, base, finishes, body_only):
         out = np.zeros(src.shape, np.float32)
         for c in range(3):
             out[..., c] = np.interp(t, stops, tn[:, c])
-        if body_only and tn[:, 0].mean() > 80:
+        if folder == 'Sleek-Series':
+            # the tone map flattens small dark detail; add the slot's local contrast back
+            sL = cv2.cvtColor(src, cv2.COLOR_BGR2LAB)[..., 0].astype(np.float32)
+            out[..., 0] += 1.6 * (sL - cv2.GaussianBlur(sL, (0, 0), 6))
+        if body_only == 'red':
+            # SR's photos are soft and dull; push the hue a little so gold reads as gold
+            out[..., 1:] = 128 + (out[..., 1:] - 128) * 1.35
+            out[..., 0] = out[..., 0] * 1.06
+        if body_only is True and tn[:, 0].mean() > 80:
             # polished metal: keep most of the photo's own highlights so it still shines
             sL = cv2.cvtColor(src, cv2.COLOR_BGR2LAB)[..., 0].astype(np.float32)
             out[..., 0] = sL * 0.65 + out[..., 0] * 0.35
@@ -102,6 +122,20 @@ def sleek():
     sizes = ndimage.sum(np.ones_like(g), lab, range(1, n + 1))
     mark = lab == (int(np.argmax(sizes)) + 1)
     black = cv2.inpaint(im, ndimage.binary_dilation(mark, iterations=3).astype(np.uint8) * 255, 5, cv2.INPAINT_TELEA)
+    # unpainted, the mark is a rectangular pocket sunk into the top. Seen from the
+    # front and above: the far (upper) inner wall shows as a grey band, the floor
+    # is in shadow, the near wall is hidden, and the near rim catches a thin highlight
+    slot = ndimage.binary_dilation(mark, iterations=1)
+    bf = black.astype(np.float32)
+    floor = cv2.GaussianBlur(slot.astype(np.float32), (0, 0), 0.7)[..., None]
+    bf = bf * (1 - floor) + 6 * floor
+    wall = slot & ~np.roll(slot, 4, 0)                        # upper rows inside the pocket
+    rim = np.roll(slot, 1, 0) & ~slot                         # just below the near edge, outside
+    wa = cv2.GaussianBlur(wall.astype(np.float32), (0, 0), 0.9)[..., None]
+    ra = cv2.GaussianBlur(rim.astype(np.float32), (0, 0), 0.6)[..., None]
+    bf = bf * (1 - wa * 0.85) + 52 * wa * 0.85
+    bf = bf * (1 - ra * 0.7) + 95 * ra * 0.7
+    black = bf.clip(0, 255).astype(np.uint8)
     cv2.imwrite(f'{d}/Sleekseries-Black.png', black)
     # top face: points that stay inside the silhouette when pushed down by the side height
     D = 64
