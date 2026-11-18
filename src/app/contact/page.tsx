@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   description:
     'Call, WhatsApp or email SR Industries for bulk prices on gas stove knobs, dial plates, legs and safety parts. Factory in Saroorpur Industrial Area, Ballabhgarh, Faridabad.',
   alternates: { canonical: '/contact' },
+  openGraph: { title: 'Contact SR Industries | Faridabad', url: '/contact', images: ['/og/home.jpg'] },
 };
 
 const MAP_SRC = `https://www.google.com/maps?q=${encodeURIComponent(CONTACT_DATA.address)}&output=embed`;

@@ -17,6 +17,16 @@ const mono = Geist_Mono({ subsets: ['latin'], weight: ['400'], variable: '--font
 const DESCRIPTION =
   'SR Industries makes LPG gas stove parts in Faridabad since 2013: knobs, dial plates, stove legs, couplers, burner pins and safety components, supplied in bulk to stove makers.';
 
+// what a shared link shows: made by scripts/og-images.mjs from the real product photos
+const SHARE_DESCRIPTION =
+  'Knobs, dial plates, stove legs, couplers and safety parts for LPG gas stoves, made in Faridabad since 2013. Model codes and per-piece prices online.';
+const SHARE_IMAGE = {
+  url: '/og/home.jpg',
+  width: 1200,
+  height: 630,
+  alt: 'SR Industries gas stove parts: knobs, a dial plate and a stove leg',
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
@@ -44,12 +54,14 @@ export const metadata: Metadata = {
     locale: 'en_IN',
     url: '/',
     title: 'SR Industries | Gas stove parts, made in Faridabad',
-    description: DESCRIPTION,
+    description: SHARE_DESCRIPTION,
+    images: [SHARE_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'SR Industries | Gas stove parts, made in Faridabad',
-    description: DESCRIPTION,
+    description: SHARE_DESCRIPTION,
+    images: [SHARE_IMAGE],
   },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large' } },
   formatDetection: { telephone: true, email: true, address: true },

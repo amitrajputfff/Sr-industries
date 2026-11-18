@@ -40,7 +40,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SP }): 
       title: c.title,
       description: c.description,
       alternates: { canonical: `/products?category=${cat.slug}` },
-      openGraph: { title: `${c.title} | SR Industries`, description: c.description, url: `/products?category=${cat.slug}` },
+      openGraph: { title: `${c.title} | SR Industries`, description: c.description, url: `/products?category=${cat.slug}`, images: ['/og/home.jpg'] },
     };
   }
   return {

@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   description:
     'SR Industries has made LPG gas stove parts in Saroorpur Industrial Area, Ballabhgarh, Faridabad since 2013: knobs, dial plates, stove legs and safety components for stove brands.',
   alternates: { canonical: '/about' },
+  openGraph: { title: 'About SR Industries | Gas stove parts since 2013', url: '/about', images: ['/og/home.jpg'] },
 };
 
 const VALUES = [

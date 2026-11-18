@@ -19,6 +19,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   if (!p) return {};
   const price = priceSummary(p);
   const description = `${p.name} (${p.modelNumber}) for LPG gas stoves. ${p.description}${price ? ` ${price} per piece.` : ''}${p.minOrderQty ? ` MOQ ${p.minOrderQty.toLocaleString('en-IN')} pcs.` : ''} Made by SR Industries, Faridabad.`;
+  // short, whole-sentence text for link previews
+  const share = `${p.name} (${p.modelNumber}) for LPG gas stoves.${price ? ` ${price} per piece.` : ''}${p.minOrderQty ? ` Minimum order ${p.minOrderQty.toLocaleString('en-IN')} pieces.` : ''} Made by SR Industries, Faridabad.`;
   return {
     title: `${p.name} ${p.modelNumber}${price ? `, ${price}/pc` : ''}`,
     description: description.slice(0, 300),
@@ -26,9 +28,15 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     openGraph: {
       type: 'website',
       title: `${p.name} | SR Industries`,
-      description: description.slice(0, 200),
+      description: share,
       url: `/products/${p.slug}`,
-      images: [{ url: p.image, alt: p.name }],
+      images: [{ url: `/og/products/${p.slug}.jpg`, width: 1200, height: 630, alt: `${p.name} ${p.modelNumber} by SR Industries` }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${p.name} | SR Industries`,
+      description: share,
+      images: [`/og/products/${p.slug}.jpg`],
     },
   };
 }
