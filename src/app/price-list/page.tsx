@@ -33,9 +33,11 @@ function Item({ p }: { p: Product }) {
   const variants = p.colorVariants ?? [];
   return (
     <article className={`pl-item${variants.length ? ' has-vars' : ''}`}>
-      <div className={`pl-thumb${isPhoto(p.image) ? ' is-photo' : ''}`}>
-        <img src={thumb(p.image)} alt="" />
-      </div>
+      {!variants.length && (
+        <div className={`pl-thumb${isPhoto(p.image) ? ' is-photo' : ''}`}>
+          <img src={thumb(p.image)} alt="" />
+        </div>
+      )}
       <div className="pl-body">
         <div className="pl-title">
           <h3>{p.name}</h3>
@@ -57,10 +59,18 @@ function Item({ p }: { p: Product }) {
           <ul className="pl-vars">
             {variants.map((v) => (
               <li key={v.name + v.modelNumber}>
-                <i style={{ background: v.color }} />
-                <span className="pl-vname">{v.name.replace(/\s*\(.*\)\s*$/, '')}</span>
-                <span className="pl-code">{v.modelNumber ?? p.modelNumber}</span>
-                <span className="pl-price">{price(p, v)}</span>
+                {/* every finish with its own photo, not one picture for the series */}
+                <div className={`pl-thumb${isPhoto(v.image) ? ' is-photo' : ''}`}>
+                  <img src={thumb(v.image)} alt={`${p.name}, ${v.name}`} />
+                </div>
+                <span className="pl-vname">
+                  <i style={{ background: v.color }} />
+                  {v.name.replace(/\s*\(.*\)\s*$/, '')}
+                </span>
+                <span className="pl-vmeta">
+                  <span className="pl-code">{v.modelNumber ?? p.modelNumber}</span>
+                  <span className="pl-price">{price(p, v)}</span>
+                </span>
               </li>
             ))}
           </ul>
